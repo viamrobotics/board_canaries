@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+
+# TODO: clean this up
+import argparse
+import asyncio
+import os
+import time
+import traceback
+
+#from google.cloud import error_reporting
+#from opencensus.common.transports.async_ import AsyncTransport
+#from opencensus.ext.stackdriver.stats_exporter import (Options,
+#                                                       new_stats_exporter)
+#from opencensus.ext.stackdriver.trace_exporter import StackdriverExporter
+#from opencensus.trace.samplers import AlwaysOnSampler
+#from opencensus.trace.tracer import Tracer
+
+from viam.components.board import Board
+from viam.robot.client import RobotClient
+from viam.rpc.dial import Credentials, DialOptions
+
+INPUT_PIN = "16"
+OUTPUT_PIN = "15"
+
+
+"""
+parser = argparse.ArgumentParser()
+parser.add_argument('--config_path', type=str, required=True, help='the absolute path to the config')
+parser.add_argument('--webhook', type=str, required=True, help='the webhook to which to publish fatal errors')
+args = parser.parse_args()
+
+config_name = args.config_path.split('/')[-1]
+
+project_id = os.environ.get('STACKDRIVER_PROJECT_ID')
+
+stats_exporter = new_stats_exporter(Options(project_id=project_id,
+                                            metric_prefix=f'custom.googleapis.com/canary/{config_name}'),
+                                    interval=15)
+
+trace_exporter = StackdriverExporter(
+    project_id=project_id,
+    transport=AsyncTransport)
+
+# TODO: Reconsider whether always sampling is the right move. With the few
+# requests we make right now, it's definitely okay. But if we start
+# recording lots of spans, it might get costly.
+tracer = Tracer(exporter=trace_exporter, sampler=AlwaysOnSampler())
+
+# We use a dummy span to mark the trace as being created by this config
+tracer.start_span(config_name)
+tracer.end_span()
+
+error_reporting_client = error_reporting.Client()
+
+monitor = get_monitors()[0]
+screen_width = monitor.width
+screen_height = monitor.height
+"""
+
+
+"""
+async def connect():
+    creds = Credentials(
+        type="robot-location-secret",
+        payload="nlh1pawlx1tnn3n0tmjj0e118dn50nljy1tvin9rxvgboeu4")
+    opts = RobotClient.Options(
+        refresh_interval=0,
+        dial_options=DialOptions(credentials=creds)
+    )
+    return await RobotClient.at_address("canary-orin-nano-main.7aaz8vjc1j.viam.cloud:9090", opts)
+"""
+
+async def connect():
+    creds = Credentials(
+        type='robot-location-secret',
+        payload='12wedufyzcbqtj3wv93f75tgdnpq6fugdrogmmcj8eh65sf3')
+    opts = RobotClient.Options(
+        refresh_interval=0,
+        dial_options=DialOptions(credentials=creds)
+    )
+    return await RobotClient.at_address('canary-orin-nano-main.7aaz8vjc1j.viam.cloud', opts)
+
+
+async def close_robot(robot: RobotClient):
+    if robot:
+        await robot.close()
+
+
+"""
+async def log_exception():
+    print(traceback.format_exc())
+    error_reporting_client.report_exception()
+    return
+"""
+
+
+async def test_gpios(input_pin, output_pin):
+    for value in (True, False):
+        await output_pin.set(value)
+        result = await input_pin.get()
+        assert(result == value) # TODO: do this better.
+
+
+async def reset_pins(input_pin, output_pin):
+    await output_pin.set(False)
+
+
+async def test_interrupts(interrupt, output_pin):
+    FREQUENCY = 50 # Hertz
+    DURATION = 2 # seconds
+    ERROR_FACTOR = 0.05
+
+    await output_pin.set(False) # Turn the output off
+    starting_count = await interrupt.value()
+
+    await output_pin.set_pwm_frequency(FREQUENCY)
+    await output_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
+    time.sleep(DURATION)
+    await output_pin.set(False) # Turn the output off
+
+    ending_count = await interrupt.value()
+    total_count = ending_count - starting_count
+    expected_count = FREQUENCY * DURATION
+
+    assert(abs(total_count - expected_count) / expected_count <= ERROR_FACTOR)
+
+
+async def test_everything(robot):
+    board = Board.from_robot(robot, "board")
+    input_pin = await board.gpio_pin_by_name(INPUT_PIN)
+    interrupt = await board.digital_interrupt_by_name(INPUT_PIN)
+    output_pin = await board.gpio_pin_by_name(OUTPUT_PIN)
+
+    await test_gpios(input_pin, output_pin)
+    await reset_pins(input_pin, output_pin)
+    await test_interrupts(interrupt, output_pin)
+    await reset_pins(input_pin, output_pin)
+
+
+async def main():
+    try:
+        robot = await connect()
+        await test_everything(robot)
+        await close_robot(robot)
+    finally: # TODO: watch for exceptions
+        pass
+        #await log_exception()
+
+if __name__ == "__main__":
+    asyncio.run(main())
