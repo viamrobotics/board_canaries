@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import asyncio
-import time
 
 from viam.components.board import Board
 from viam.robot.client import RobotClient
@@ -29,12 +28,14 @@ async def close_robot(robot: RobotClient):
 
 async def test_gpios(input_pin, output_pin):
     for value in (True, False):
+        print("Testing GPIO pin going {}...".format("high" if value else "low"))
         await output_pin.set(value)
         result = await input_pin.get()
         assert(result == value) # TODO: do this better.
 
 
 async def test_interrupts(interrupt, output_pin):
+    print("Testing interrupts...")
     FREQUENCY = 50 # Hertz
     DURATION = 2 # seconds
     ERROR_FACTOR = 0.05
@@ -44,8 +45,8 @@ async def test_interrupts(interrupt, output_pin):
 
     await output_pin.set_pwm_frequency(FREQUENCY)
     await output_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
-    time.sleep(DURATION)
-    await output_pin.set(False) # Turn the output off
+    await asyncio.sleep(DURATION)
+    await output_pin.set(False) # Turn the output off again
 
     ending_count = await interrupt.value()
     total_count = ending_count - starting_count
@@ -68,6 +69,7 @@ async def test_everything(robot):
     await reset_pins(input_pin, output_pin)
     await test_interrupts(interrupt, output_pin)
     await reset_pins(input_pin, output_pin)
+    print("Success!")
 
 
 async def main():
