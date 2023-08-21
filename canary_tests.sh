@@ -43,5 +43,5 @@ echo "running tests..."
 ./test_gpios.py
 echo "done running tests!"
 
-pushd > /dev/null
+popd > /dev/null # pushd "$this_dir"
 exit 0
