@@ -4,21 +4,17 @@ import asyncio
 
 from viam.components.board import Board
 from viam.robot.client import RobotClient
-from viam.rpc.dial import Credentials, DialOptions
+from viam.rpc.dial import DialOptions
 
-INPUT_PIN = "16"
-OUTPUT_PIN = "15"
+import canary_config as conf
 
 
 async def connect():
-    creds = Credentials(
-        type='robot-location-secret',
-        payload='12wedufyzcbqtj3wv93f75tgdnpq6fugdrogmmcj8eh65sf3')
     opts = RobotClient.Options(
         refresh_interval=0,
-        dial_options=DialOptions(credentials=creds)
+        dial_options=DialOptions(credentials=conf.creds)
     )
-    return await RobotClient.at_address('canary-orin-nano-main.7aaz8vjc1j.viam.cloud', opts)
+    return await RobotClient.at_address(conf.address, opts)
 
 
 async def close_robot(robot: RobotClient):
@@ -61,9 +57,9 @@ async def reset_pins(input_pin, output_pin):
 
 async def test_everything(robot):
     board = Board.from_robot(robot, "board")
-    input_pin = await board.gpio_pin_by_name(INPUT_PIN)
-    interrupt = await board.digital_interrupt_by_name(INPUT_PIN)
-    output_pin = await board.gpio_pin_by_name(OUTPUT_PIN)
+    input_pin = await board.gpio_pin_by_name(conf.INPUT_PIN)
+    interrupt = await board.digital_interrupt_by_name(conf.INPUT_PIN)
+    output_pin = await board.gpio_pin_by_name(conf.OUTPUT_PIN)
 
     await test_gpios(input_pin, output_pin)
     await reset_pins(input_pin, output_pin)
