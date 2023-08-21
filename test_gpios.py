@@ -75,7 +75,6 @@ async def main():
         await close_robot(robot)
     finally: # TODO: watch for exceptions
         pass
-        #await log_exception()
 
 if __name__ == "__main__":
     asyncio.run(main())
