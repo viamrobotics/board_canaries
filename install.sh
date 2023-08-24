@@ -13,7 +13,7 @@ echo "this_dir is $this_dir"
 pushd "$this_dir" > /dev/null
 
 # Install a systemctl file for the canary server
-cp viam-server-canary.service /etc/systemd/system
+cp viam-canary.service /etc/systemd/system
 systemctl daemon-reload
 
 # Create a crontab to run the script
