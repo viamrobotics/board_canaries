@@ -4,4 +4,5 @@
 
 SHELL=/bin/sh
 
-30 2 * * *   cd CANARY_DIR && git pull --ff-only origin main && ./canary_tests.sh
+# Even if pulling the latest version of the repo fails, we still want to run the tests.
+30 2 * * *   cd CANARY_DIR && git pull --ff-only origin main; ./canary_tests.sh
