@@ -16,5 +16,18 @@ pushd "$this_dir" > /dev/null
 cp viam-canary.service /etc/systemd/system
 systemctl daemon-reload
 
-# Create a crontab to run the script
+# Create a crontab to run the script. Overwrite anything that had been there previously, in case
+# we're installing updates to an old version.
 cat crontab_template.txt | sed "s/CANARY_DIR/$this_dir/g" > /etc/cron.d/viam-board-canary
+
+# Remind the user of the steps they need to do manually
+echo ""
+echo ""
+echo "%%%%%%%%%%%%%"
+echo "% REMINDER! %"
+echo "%%%%%%%%%%%%%"
+echo "There are two manual things to do:"
+echo "- Set up a robot on app.viam.com, and download its config to"
+echo "    /etc/viam-canary.json (not the default /etc/viam.json!)."
+echo "- Copy canary_config.example.py into canary_config.py and"
+echo "    edit it to be specific to your board."
