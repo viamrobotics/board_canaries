@@ -4,4 +4,4 @@
 
 SHELL=/bin/sh
 
-0 2 * * *   cd CANARY_DIR && git pull --ff-only origin main && ./canary_tests.sh
+30 2 * * *   cd CANARY_DIR && git pull --ff-only origin main && ./canary_tests.sh
