@@ -1,6 +1,8 @@
 #!/bin/bash
 set -ex # -e: exit immediately if there are errors. -x: print out every line that runs
 
+date # TODO: remove this when we have logging properly set up
+
 if [[ "$(whoami)" != "root" ]] ; then
 	echo "We must run as root, but currently we're $(whoami) instead."
 	exit 1
