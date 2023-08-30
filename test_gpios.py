@@ -18,13 +18,13 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             dial_options=DialOptions(credentials=conf.creds)
         )
         self.robot = await RobotClient.at_address(conf.address, opts)
-        board = Board.from_robot(robot, "board")
+        board = Board.from_robot(self.robot, "board")
         self.input_pin = await board.gpio_pin_by_name(conf.INPUT_PIN)
         self.interrupt = await board.digital_interrupt_by_name(conf.INPUT_PIN)
         self.output_pin = await board.gpio_pin_by_name(conf.OUTPUT_PIN)
 
     async def asyncTearDown(self):
-        await output_pin.set(False)
+        await self.output_pin.set(False)
         await self.robot.close()
 
     @parameterized.expand(((True,), (False,)))
@@ -34,7 +34,6 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result, value)
 
     async def test_interrupts(self):
-        print("Testing interrupts...")
         FREQUENCY = 50 # Hertz
         DURATION = 2 # seconds
         ERROR_FACTOR = 0.05
