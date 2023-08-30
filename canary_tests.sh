@@ -21,7 +21,7 @@ now=$(date +"%T")
 echo "Current time : $now"
 # stop the viam-server first
 echo "stopping viam-server"
-systemctl stop viam-server-canary || true # Don't fail on this line if the server wasn't running
+systemctl stop viam-canary
 
 # UPDATE RDK
 viam-server --aix-update
@@ -34,7 +34,7 @@ fi
 
 # Start the Viam Server after updating
 echo "restarting the viam-server"
-systemctl start viam-server-canary
+systemctl start viam-canary
 echo "viam-server up"
 sleep 60 # The server takes some time to set up its connections; don't talk to it too soon.
 
