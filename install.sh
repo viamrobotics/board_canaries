@@ -13,7 +13,7 @@ echo "this_dir is $this_dir"
 pushd "$this_dir" > /dev/null
 
 # Install the RDK server
-curl "https://storage.googleapis.com/packages.viam.com/apps/viam-server/viam-server-latest-$(uname -i)" -o viam-server
+curl "https://storage.googleapis.com/packages.viam.com/apps/viam-server/viam-server-latest-$(uname -i).AppImage" -o viam-server
 chmod 755 viam-server
 ./viam-server --aix-install
 
