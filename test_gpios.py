@@ -17,18 +17,19 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             dial_options=DialOptions(credentials=conf.creds)
         )
         self.robot = await RobotClient.at_address(conf.address, opts)
+        self.input_pin = await board.gpio_pin_by_name(conf.INPUT_PIN)
+        self.interrupt = await board.digital_interrupt_by_name(conf.INPUT_PIN)
+        self.output_pin = await board.gpio_pin_by_name(conf.OUTPUT_PIN)
 
     async def asyncTearDown(self):
         await output_pin.set(False)
         await self.robot.close()
 
-
-async def test_gpios(input_pin, output_pin):
-    for value in (True, False):
-        print("Testing GPIO pin going {}...".format("high" if value else "low"))
-        await output_pin.set(value)
-        result = await input_pin.get()
-        assert(result == value) # TODO: do this better.
+    async def test_gpios(self):
+        for value in (True, False):
+            await self.output_pin.set(value)
+            result = await self.input_pin.get()
+            self.assertEqual(result, value)
 
 
 async def test_interrupts(interrupt, output_pin):
