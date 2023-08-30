@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import asyncio
+from parameterized import parameterized
 import unittest
 
 from viam.components.board import Board
@@ -25,11 +26,11 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         await output_pin.set(False)
         await self.robot.close()
 
-    async def test_gpios(self):
-        for value in (True, False):
-            await self.output_pin.set(value)
-            result = await self.input_pin.get()
-            self.assertEqual(result, value)
+    @parameterized.expand(((True,), (False,)))
+    async def test_gpios(self, value):
+        await self.output_pin.set(value)
+        result = await self.input_pin.get()
+        self.assertEqual(result, value)
 
 
 async def test_interrupts(interrupt, output_pin):
