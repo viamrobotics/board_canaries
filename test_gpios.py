@@ -18,6 +18,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             dial_options=DialOptions(credentials=conf.creds)
         )
         self.robot = await RobotClient.at_address(conf.address, opts)
+        board = Board.from_robot(robot, "board")
         self.input_pin = await board.gpio_pin_by_name(conf.INPUT_PIN)
         self.interrupt = await board.digital_interrupt_by_name(conf.INPUT_PIN)
         self.output_pin = await board.gpio_pin_by_name(conf.OUTPUT_PIN)
@@ -49,30 +50,9 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         ending_count = await self.interrupt.value()
         total_count = ending_count - starting_count
         expected_count = FREQUENCY * DURATION
+        allowable_error = expected_count * ERROR_FACTOR
+        self.assertAlmostEqual(total_count, expected_count, delta=allowable_error)
 
-        self.assertLessThan(abs(total_count - expected_count) / expected_count, ERROR_FACTOR)
-
-
-async def test_everything(robot):
-    board = Board.from_robot(robot, "board")
-    input_pin = await board.gpio_pin_by_name(conf.INPUT_PIN)
-    interrupt = await board.digital_interrupt_by_name(conf.INPUT_PIN)
-    output_pin = await board.gpio_pin_by_name(conf.OUTPUT_PIN)
-
-    await test_gpios(input_pin, output_pin)
-    await reset_pins(input_pin, output_pin)
-    await test_interrupts(interrupt, output_pin)
-    await reset_pins(input_pin, output_pin)
-    print("Success!")
-
-
-async def main():
-    try:
-        robot = await connect()
-        await test_everything(robot)
-        await close_robot(robot)
-    finally: # TODO: watch for exceptions
-        pass
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    unittest.main()
