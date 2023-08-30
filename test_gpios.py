@@ -32,26 +32,25 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         result = await self.input_pin.get()
         self.assertEqual(result, value)
 
+    async def test_interrupts(self):
+        print("Testing interrupts...")
+        FREQUENCY = 50 # Hertz
+        DURATION = 2 # seconds
+        ERROR_FACTOR = 0.05
 
-async def test_interrupts(interrupt, output_pin):
-    print("Testing interrupts...")
-    FREQUENCY = 50 # Hertz
-    DURATION = 2 # seconds
-    ERROR_FACTOR = 0.05
+        await self.output_pin.set(False) # Turn the output off
+        starting_count = await self.interrupt.value()
 
-    await output_pin.set(False) # Turn the output off
-    starting_count = await interrupt.value()
+        await self.output_pin.set_pwm_frequency(FREQUENCY)
+        await self.output_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
+        await asyncio.sleep(DURATION)
+        await self.output_pin.set(False) # Turn the output off again
 
-    await output_pin.set_pwm_frequency(FREQUENCY)
-    await output_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
-    await asyncio.sleep(DURATION)
-    await output_pin.set(False) # Turn the output off again
+        ending_count = await self.interrupt.value()
+        total_count = ending_count - starting_count
+        expected_count = FREQUENCY * DURATION
 
-    ending_count = await interrupt.value()
-    total_count = ending_count - starting_count
-    expected_count = FREQUENCY * DURATION
-
-    assert(abs(total_count - expected_count) / expected_count <= ERROR_FACTOR)
+        self.assertLessThan(abs(total_count - expected_count) / expected_count, ERROR_FACTOR)
 
 
 async def test_everything(robot):
