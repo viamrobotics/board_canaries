@@ -22,8 +22,10 @@ cp viam-canary.service /etc/systemd/system
 systemctl daemon-reload
 
 # Create a crontab to run the script. Overwrite anything that had been there previously, in case
-# we're installing updates to an old version.
-cat crontab_template.txt | sed "s/CANARY_DIR/$this_dir/g" > /etc/cron.d/viam-board-canary
+# we're installing updates to an old version. We use '%' as the regex delimiter for sed instead of
+# the more traditional '/' because there are slashes within $this_dir and we don't want too many
+# slashes to confuse the parser.
+cat crontab_template.txt | sed "s%CANARY_DIR%$this_dir%g" > /etc/cron.d/viam-board-canary
 
 # Remind the user of the steps they need to do manually
 echo ""
