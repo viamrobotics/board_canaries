@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import asyncio
+import unittest
 
 from viam.components.board import Board
 from viam.robot.client import RobotClient
@@ -9,17 +10,17 @@ from viam.rpc.dial import DialOptions
 import canary_config as conf
 
 
-async def connect():
-    opts = RobotClient.Options(
-        refresh_interval=0,
-        dial_options=DialOptions(credentials=conf.creds)
-    )
-    return await RobotClient.at_address(conf.address, opts)
+class GpioTest(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        opts = RobotClient.Options(
+            refresh_interval=0,
+            dial_options=DialOptions(credentials=conf.creds)
+        )
+        self.robot = await RobotClient.at_address(conf.address, opts)
 
-
-async def close_robot(robot: RobotClient):
-    if robot:
-        await robot.close()
+    async def asyncTearDown(self):
+        await output_pin.set(False)
+        await self.robot.close()
 
 
 async def test_gpios(input_pin, output_pin):
@@ -49,10 +50,6 @@ async def test_interrupts(interrupt, output_pin):
     expected_count = FREQUENCY * DURATION
 
     assert(abs(total_count - expected_count) / expected_count <= ERROR_FACTOR)
-
-
-async def reset_pins(input_pin, output_pin):
-    await output_pin.set(False)
 
 
 async def test_everything(robot):
