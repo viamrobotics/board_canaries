@@ -28,6 +28,7 @@ systemctl daemon-reload
 cat crontab_template.txt | sed "s%CANARY_DIR%$this_dir%g" > /etc/cron.d/viam-board-canary
 
 # Remind the user of the steps they need to do manually
+set +x # Stop printing every line: we're going to print them ourselves
 echo ""
 echo ""
 echo "%%%%%%%%%%%%%"
