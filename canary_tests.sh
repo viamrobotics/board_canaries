@@ -17,8 +17,6 @@ pushd "$this_dir" > /dev/null
 # This script is adapted from
 # https://viam.atlassian.net/wiki/spaces/ENG/pages/155451406/Data+ML+Canary+Testing+Bot
 
-now=$(date +"%T")
-echo "Current time : $now"
 # stop the viam-server first
 echo "stopping viam-server"
 systemctl stop viam-canary
