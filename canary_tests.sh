@@ -38,8 +38,7 @@ systemctl start viam-canary
 echo "viam-server up"
 sleep 60 # The server takes some time to set up its connections; don't talk to it too soon.
 
-# TODO: consider updating the repo to the latest version here. Is that something that you can do in
-# a cron job, where you don't have user credentials?
+git pull --ff-only origin main # Update the test script if necessary
 
 echo "running tests..."
 ./test_gpios.py
