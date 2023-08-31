@@ -1,0 +1,8 @@
+# This file is a template for a file that should be dropped into /etc/cron.d
+# When you replace CANARY_DIR with the right value, it will pull the latest version of the repo and
+# run the canary tests in the middle of the night.
+
+SHELL=/bin/sh
+
+# Even if pulling the latest version of the repo fails, we still want to run the tests.
+30 2 * * *   root   cd CANARY_DIR && git pull --ff-only origin main; ./canary_tests.sh >> /tmp/canary_tests.log

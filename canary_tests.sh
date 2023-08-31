@@ -1,6 +1,8 @@
 #!/bin/bash
 set -ex # -e: exit immediately if there are errors. -x: print out every line that runs
 
+date # TODO: remove this when we have logging properly set up
+
 if [[ "$(whoami)" != "root" ]] ; then
 	echo "We must run as root, but currently we're $(whoami) instead."
 	exit 1
@@ -19,7 +21,7 @@ now=$(date +"%T")
 echo "Current time : $now"
 # stop the viam-server first
 echo "stopping viam-server"
-systemctl stop viam-server-canary
+systemctl stop viam-canary
 
 # UPDATE RDK
 viam-server --aix-update
@@ -32,15 +34,16 @@ fi
 
 # Start the Viam Server after updating
 echo "restarting the viam-server"
-systemctl start viam-server-canary
+systemctl start viam-canary
 echo "viam-server up"
 sleep 60 # The server takes some time to set up its connections; don't talk to it too soon.
 
-# TODO: consider updating the repo to the latest version here. Is that something that you can do in
-# a cron job, where you don't have user credentials?
+git pull --ff-only origin main # Update the test script if necessary
 
 echo "running tests..."
-./test_gpios.py
+# The cron job that runs our script writes stdout to file. If something goes wrong in the tests, it
+# will be written to stderr. Redirect that to stdout so it gets written to file, too.
+./test_gpios.py 2>&1
 echo "done running tests!"
 
 popd > /dev/null # pushd "$this_dir"
