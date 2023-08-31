@@ -41,7 +41,9 @@ sleep 60 # The server takes some time to set up its connections; don't talk to i
 git pull --ff-only origin main # Update the test script if necessary
 
 echo "running tests..."
-./test_gpios.py
+# The cron job that runs our script writes stdout to file. If something goes wrong in the tests, it
+# will be written to stderr. Redirect that to stdout so it gets written to file, too.
+./test_gpios.py 2>&1
 echo "done running tests!"
 
 popd > /dev/null # pushd "$this_dir"
