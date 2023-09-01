@@ -9,21 +9,19 @@ import slack_reporter_config as config
 
 def report_errors(output):
     client = slack_sdk.WebClient(token=config.auth_token)
-    text = "\n".join(["The canary tests on the {} board have failed. ".format(
-                          config.board_name),
-                      "Recent output is: ```"] +
-                      output +
-                      ["```"])
-    result = client.chat_postMessage(
-            channel=config.channel, text=text)
+    text = ("The canary tests on the {} board have failed. Recent output is:"
+        .format(config.board_name))
+    file_contents = "".join(output).strip() # Remove the final trailing newline
+
+    result = client.files_upload_v2(
+        channel=config.channel, content=file_contents, initial_comment=text)
     # If we get a result, things worked. Failure raises exceptions instead.
     # Currently, we ignore any errors. How do we report that we're unable to
     # report stuff!?
 
 
 def tests_succeeded(contents):
-    return contents[-2:] == ["Success!", "done running tests!"]
-
+    return contents[-2:] == ["Success!\n", "done running tests!\n"]
 
 
 if __name__ == "__main__":
