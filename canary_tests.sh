@@ -1,7 +1,8 @@
 #!/bin/bash
 set -ex # -e: exit immediately if there are errors. -x: print out every line that runs
 
-date # TODO: remove this when we have logging properly set up
+echo '' # Give some visual separation to any humans looking at the logs
+date '+%Y-%m-%d' # This is to help the logs analysis find today's logs.
 
 if [[ "$(whoami)" != "root" ]] ; then
 	echo "We must run as root, but currently we're $(whoami) instead."
