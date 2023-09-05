@@ -12,7 +12,7 @@ this_dir="$(dirname -- "$( readlink -f -- "$0"; )")";
 echo "this_dir is $this_dir"
 pushd "$this_dir" > /dev/null
 
-pip install viam-sdk
+pip install -r requirements.txt
 
 # Install the RDK server
 curl "https://storage.googleapis.com/packages.viam.com/apps/viam-server/viam-server-latest-$(uname -i).AppImage" -o viam-server
