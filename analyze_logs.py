@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import fileinput # For accessing stdin
 
-# TODO: remember to add slack_sdk to requirements.txt when that file exists
 import slack_sdk
 
 import slack_reporter_config as config
