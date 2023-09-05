@@ -20,7 +20,7 @@ def report_errors(output):
     client = slack_sdk.WebClient(token=config.auth_token)
     text = ("The canary tests on the {} board have failed. Recent output is:"
         .format(config.board_name))
-    file_contents = "".join(output).strip() # Remove the final trailing newline
+    file_contents = "\n".join(output)
 
     result = client.files_upload_v2(
         channel=config.channel_id, content=file_contents, snippet_type="text",
@@ -31,17 +31,19 @@ def report_errors(output):
 
 def tests_succeeded(contents):
     ideal_end = [
-        "OK\n",
-        "+ echo 'done running tests!'\n",
-        "done running tests!\n",
-        "+ popd\n",
-        "+ exit 0\n",
+        "OK",
+        "+ echo 'done running tests!'",
+        "done running tests!",
+        "+ popd",
+        "+ exit 0",
         ]
     return contents[-5:] == ideal_end
 
 
 if __name__ == "__main__":
-    contents = [line for line in fileinput.input()]
+    # Most lines from stdin end in a newline, but maybe not the last one. To give a more uniform
+    # interface, we strip out all trailing whitespace here, and maybe add newlines back later.
+    contents = [line.rstrip() for line in fileinput.input()]
     if not tests_succeeded(contents):
         if contents == []:
             report_no_output()
