@@ -30,7 +30,14 @@ def report_errors(output):
 
 
 def tests_succeeded(contents):
-    return contents[-2:] == ["Success!\n", "done running tests!\n"]
+    ideal_end = [
+        "OK\n",
+        "+ echo 'done running tests!'\n",
+        "done running tests!\n",
+        "+ popd\n",
+        "+ exit 0\n",
+        ]
+    return contents[-5:] == ideal_end
 
 
 if __name__ == "__main__":
