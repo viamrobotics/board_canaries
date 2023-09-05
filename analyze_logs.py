@@ -10,7 +10,7 @@ def report_no_output():
     client = slack_sdk.WebClient(token=config.auth_token)
     text = ("The canary tests on the {} board had no recent output!"
             .format(config.board_name))
-    result = client.chat_postMessage(channel=config.channel, text=text)
+    result = client.chat_postMessage(channel=config.channel_id, text=text)
     # If we get a result, things worked. Failure raises exceptions instead.
     # Currently, we ignore any errors. How do we report that we're unable to
     # report stuff!?
@@ -23,7 +23,7 @@ def report_errors(output):
     file_contents = "".join(output).strip() # Remove the final trailing newline
 
     result = client.files_upload_v2(
-        channel=config.channel, content=file_contents, initial_comment=text)
+        channel=config.channel_id, content=file_contents, initial_comment=text)
     # Again, if things fail we'll raise an exception here, but there is no
     # obvious resolution for that.
 
