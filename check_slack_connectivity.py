@@ -11,6 +11,6 @@ import slack_reporter_config as config
 #     canary tests.
 if __name__ == "__main__":
     client = slack_sdk.WebClient(token=config.auth_token)
-    text = ("Canary tests on the {} board should be able to report to Slack!"
-            .format(config.board_name))
+    text = (f"Canary tests on the {config.board_name} board should be able " +
+            "to report to Slack!")
     result = client.chat_postMessage(channel=config.channel_id, text=text)
