@@ -37,7 +37,7 @@ def tests_succeeded(contents):
         "+ popd",
         "+ exit 0",
         ]
-    return contents[-5:] == ideal_end
+    return contents[-len(ideal_end):] == ideal_end
 
 
 if __name__ == "__main__":
