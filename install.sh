@@ -12,6 +12,10 @@ this_dir="$(dirname -- "$( readlink -f -- "$0"; )")";
 echo "this_dir is $this_dir"
 pushd "$this_dir" > /dev/null
 
+# This next line basically means "it's okay for the root user to update the repo from within a cron
+# job, even if the repo is owned by a normal non-root user."
+git config --global --add safe.directory "$this_dir"
+
 pip install -r requirements.txt
 
 # Install the RDK server
@@ -36,8 +40,10 @@ echo ""
 echo "%%%%%%%%%%%%%"
 echo "% REMINDER! %"
 echo "%%%%%%%%%%%%%"
-echo "There are two manual things to do:"
+echo "There are three manual things to do:"
 echo "- Set up a robot on app.viam.com, and download its config to"
 echo "    /etc/viam-canary.json (not the default /etc/viam.json!)."
-echo "- Copy canary_config.example.py into canary_config.py and"
-echo "    edit it to be specific to your board."
+echo "- Copy canary_config.example.py into canary_config.py and edit it to be"
+echo "    specific to your board."
+echo "- Copy slack_reporter_config.example.py into slack_reporter_config.py"
+echo "    and edit it to be specific to your board."
