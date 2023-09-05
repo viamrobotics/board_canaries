@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex # -e: exit early on any error. -x: write all commands to stderr
 
 # See https://stackoverflow.com/a/1482133 for an explanation of this next line.
 # It gets the directory in which this script resides.
