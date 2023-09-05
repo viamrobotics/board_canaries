@@ -12,6 +12,10 @@ this_dir="$(dirname -- "$( readlink -f -- "$0"; )")";
 echo "this_dir is $this_dir"
 pushd "$this_dir" > /dev/null
 
+# This next line basically means "it's okay for the root user to update the repo from within a cron
+# job, even if the repo is owned by a normal non-root user."
+git config --global --add safe.directory "$this_dir"
+
 pip install -r requirements.txt
 
 # Install the RDK server

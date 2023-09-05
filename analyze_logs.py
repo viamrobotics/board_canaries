@@ -24,7 +24,7 @@ def report_errors(output):
 
     result = client.files_upload_v2(
         channel=config.channel_id, content=file_contents, snippet_type="text",
-        initial_comment=text)
+        filename="canary_tests.log", initial_comment=text)
     # Again, if things fail we'll raise an exception here, but there is no
     # obvious resolution for that.
 
