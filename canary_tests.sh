@@ -20,7 +20,7 @@ pushd "$this_dir" > /dev/null
 systemctl stop viam-canary
 
 # UPDATE RDK
-viam-server --aix-update
+/usr/local/bin/viam-server --aix-update
 
 systemctl start viam-canary
 sleep 60 # The server takes some time to set up its connections; don't talk to it too soon.
