@@ -19,7 +19,7 @@ pushd "$this_dir" > /dev/null
 
 systemctl stop viam-canary
 
-# UPDATE RDK
+# Update RDK. Use the absolute path because the cron job might not have $PATH set correctly.
 /usr/local/bin/viam-server --aix-update
 
 systemctl start viam-canary
