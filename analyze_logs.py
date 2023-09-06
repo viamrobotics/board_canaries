@@ -21,7 +21,7 @@ def report_no_output():
 
 def report_errors(output):
     client = slack_sdk.WebClient(token=config.auth_token)
-    text = (f"The canary tests on the {config.board_name} board have failed." +
+    text = (f"The canary tests on the {config.board_name} board have failed. " +
             "Recent output is:")
     file_contents = "\n".join(output)
 
