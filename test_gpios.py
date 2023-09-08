@@ -29,12 +29,12 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         # Otherwise, we'll reuse the same inputs and outputs.
         try:
             INTERRUPT_PIN = conf.INTERRUPT_PIN
-        except NameError:
+        except AttributeError:
             INTERRUPT_PIN = conf.INPUT_PIN
 
         try:
             PWM_PIN = conf.PWM_PIN
-        except NameError:
+        except AttributeError:
             PWM_PIN = conf.OUTPUT_PIN
 
         self.pwm_pin = await board.gpio_pin_by_name(PWM_PIN)
