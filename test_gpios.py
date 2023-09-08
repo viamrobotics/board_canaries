@@ -38,7 +38,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             PWM_PIN = conf.OUTPUT_PIN
 
         self.pwm_pin = await board.gpio_pin_by_name(PWM_PIN)
-        self.interrupt = await board.digital_interrupt_by_name(INPUT_PIN)
+        self.interrupt = await board.digital_interrupt_by_name(INTERRUPT_PIN)
 
     async def asyncTearDown(self):
         await self.output_pin.set(False)
