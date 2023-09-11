@@ -27,7 +27,7 @@ sleep 60 # The server takes some time to set up its connections; don't talk to i
 
 git pull --ff-only origin main # Update the test script if necessary
 
-pip install -r requiremenst.txt # Install any new dependencies
+pip install -r requirements.txt # Install any new dependencies
 
 echo "running tests..."
 # The cron job that runs our script writes stdout to file. If something goes wrong in the tests, it
