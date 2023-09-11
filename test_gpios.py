@@ -58,15 +58,19 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         DURATION = 2 # seconds
         ERROR_FACTOR = 0.05
 
-        await self.pwm_pin.set(False) # Turn the output off
-        starting_count = await self.interrupt.value()
-
         await self.pwm_pin.set_pwm_frequency(FREQUENCY)
         await self.pwm_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
+
+        # Sometimes a board has a small delay between when you set the PWM and
+        # when the signal starts outputting. To hopefully compensate for this,
+        # we'll wait a short while before we start counting cycles.
+        await asyncio.sleep(0.5)
+
+        starting_count = await self.interrupt.value()
         await asyncio.sleep(DURATION)
         await self.pwm_pin.set(False) # Turn the output off again
-
         ending_count = await self.interrupt.value()
+
         total_count = ending_count - starting_count
         expected_count = FREQUENCY * DURATION
         allowable_error = expected_count * ERROR_FACTOR
