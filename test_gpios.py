@@ -63,7 +63,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
 
         # Sometimes a board has a small delay between when you set the PWM and
         # when the signal starts outputting. To hopefully compensate for this,
-        # we'll wait a shart amount before we start counting cycles.
+        # we'll wait a short while before we start counting cycles.
         await asyncio.sleep(0.5)
 
         starting_count = await self.interrupt.value()
