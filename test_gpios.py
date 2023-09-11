@@ -20,8 +20,28 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         self.robot = await RobotClient.at_address(conf.address, opts)
         board = Board.from_robot(self.robot, "board")
         self.input_pin = await board.gpio_pin_by_name(conf.INPUT_PIN)
-        self.interrupt = await board.digital_interrupt_by_name(conf.INPUT_PIN)
         self.output_pin = await board.gpio_pin_by_name(conf.OUTPUT_PIN)
+
+        # Most boards have combination GPIO/PWM/interrupt pins. However, rarely
+        # they are separated to different pins (e.g., the Beaglebone AI-64 does
+        # not have GPIO functionality on the PWM pins or vice versa). We need
+        # two pairs of pins: GPIO (output) pairing with GPIO (input), and PWM
+        # (output) pairing with digital interrupt (input). For boards whose
+        # pins can have multiple functions, you can just define the first pair
+        # and we'll reuse it for both. but if you want to define the two pairs
+        # separately, you can.
+        try:
+            INTERRUPT_PIN = conf.INTERRUPT_PIN
+        except AttributeError:
+            INTERRUPT_PIN = conf.INPUT_PIN
+
+        try:
+            PWM_PIN = conf.PWM_PIN
+        except AttributeError:
+            PWM_PIN = conf.OUTPUT_PIN
+
+        self.pwm_pin = await board.gpio_pin_by_name(PWM_PIN)
+        self.interrupt = await board.digital_interrupt_by_name(INTERRUPT_PIN)
 
     async def asyncTearDown(self):
         await self.output_pin.set(False)
@@ -38,13 +58,13 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         DURATION = 2 # seconds
         ERROR_FACTOR = 0.05
 
-        await self.output_pin.set(False) # Turn the output off
+        await self.pwm_pin.set(False) # Turn the output off
         starting_count = await self.interrupt.value()
 
-        await self.output_pin.set_pwm_frequency(FREQUENCY)
-        await self.output_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
+        await self.pwm_pin.set_pwm_frequency(FREQUENCY)
+        await self.pwm_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
         await asyncio.sleep(DURATION)
-        await self.output_pin.set(False) # Turn the output off again
+        await self.pwm_pin.set(False) # Turn the output off again
 
         ending_count = await self.interrupt.value()
         total_count = ending_count - starting_count
