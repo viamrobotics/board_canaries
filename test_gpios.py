@@ -24,9 +24,12 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
 
         # Most boards have combination GPIO/PWM/interrupt pins. However, rarely
         # they are separated to different pins (e.g., the Beaglebone AI-64 does
-        # not have GPIO functionality on the PWM pins or vice versa). If you
-        # define them separately, define these extra variables in the config.
-        # Otherwise, we'll reuse the same inputs and outputs.
+        # not have GPIO functionality on the PWM pins or vice versa). We need
+        # two pairs of pins: GPIO (output) pairing with GPIO (input), and PWM
+        # (output) pairing with digital interrupt (input). For boards whose
+        # pins can have multiple functions, you can just define the first pair
+        # and we'll reuse it for both. but if you want to define the two pairs
+        # separately, you can.
         try:
             INTERRUPT_PIN = conf.INTERRUPT_PIN
         except AttributeError:
