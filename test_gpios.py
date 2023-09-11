@@ -17,23 +17,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             refresh_interval=0,
             dial_options=DialOptions(credentials=conf.creds)
         )
-
-        # As of September 2023, there is a race condition in the Python SDK,
-        # and some connections time out if they get opened and closed too
-        # quickly. Try a few times before giving up.
-        # TODO[RSDK-4846]: Simplify this when the bug is fixed.
-        most_recent_error = None
-        for _ in range(3):
-            try:
-                self.robot = await RobotClient.at_address(conf.address, opts)
-                break
-            except ConnectionError as e:
-                most_recent_error = e
-        else:
-            # for...else is really "if we didn't break out of the loop early"
-            raise most_recent_error
-
-
+        self.robot = await RobotClient.at_address(conf.address, opts)
         board = Board.from_robot(self.robot, "board")
         self.input_pin = await board.gpio_pin_by_name(conf.INPUT_PIN)
         self.output_pin = await board.gpio_pin_by_name(conf.OUTPUT_PIN)
