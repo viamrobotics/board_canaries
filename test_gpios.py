@@ -31,24 +31,22 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         # and we'll reuse it for both. but if you want to define the two pairs
         # separately, you can.
         try:
-            INTERRUPT_PIN = conf.INTERRUPT_PIN
+            HW_INTERRUPT_PIN = conf.HW_INTERRUPT_PIN
         except AttributeError:
-            INTERRUPT_PIN = conf.INPUT_PIN
+            HW_INTERRUPT_PIN = conf.INPUT_PIN
 
-        try: 
+        try:
             HW_PWM_PIN = conf.PWM_PIN
         except AttributeError:
             HW_PWM_PIN = conf.OUTPUT_PIN
-
-        # We also need a software pwm pin and interrupt pin pair to test software pwm.
-        SW_PWM_PIN = conf.SW_PWM_PIN
-        SW_INTERRUPT_PIN = conf.SW_INTERRUPT_PIN
             
 
         self.hw_pwm_pin = await board.gpio_pin_by_name(HW_PWM_PIN)
-        self.sw_pwm_pin = await board.gpio_pin_by_name(SW_PWM_PIN)
-        self.interrupt = await board.digital_interrupt_by_name(INTERRUPT_PIN)
-        self.sw_interrupt = await board.digital_interrupt_by_name(SW_INTERRUPT_PIN)
+        self.hw_interrupt = await board.digital_interrupt_by_name(HW_INTERRUPT_PIN)
+
+        # We also need a software pwm pin and interrupt pin pair to test software pwm.
+        self.sw_pwm_pin = await board.gpio_pin_by_name(conf.SW_PWM_PIN)
+        self.sw_interrupt = await board.digital_interrupt_by_name(conf.SW_INTERRUPT_PIN)
 
     async def asyncTearDown(self):
         await self.output_pin.set(False)
@@ -68,7 +66,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
 
         if pwm == "hw":
             pwm_pin = self.hw_pwm_pin
-            interrupt = self.interrupt
+            interrupt = self.hw_interrupt
         else:
             pwm_pin = self.sw_pwm_pin
             interrupt = self.sw_interrupt
