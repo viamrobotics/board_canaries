@@ -31,17 +31,22 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         # and we'll reuse it for both. but if you want to define the two pairs
         # separately, you can.
         try:
-            INTERRUPT_PIN = conf.INTERRUPT_PIN
+            HW_INTERRUPT_PIN = conf.HW_INTERRUPT_PIN
         except AttributeError:
-            INTERRUPT_PIN = conf.INPUT_PIN
+            HW_INTERRUPT_PIN = conf.INPUT_PIN
 
         try:
-            PWM_PIN = conf.PWM_PIN
+            HW_PWM_PIN = conf.HW_PWM_PIN
         except AttributeError:
-            PWM_PIN = conf.OUTPUT_PIN
+            HW_PWM_PIN = conf.OUTPUT_PIN
+            
 
-        self.pwm_pin = await board.gpio_pin_by_name(PWM_PIN)
-        self.interrupt = await board.digital_interrupt_by_name(INTERRUPT_PIN)
+        self.hw_pwm_pin = await board.gpio_pin_by_name(HW_PWM_PIN)
+        self.hw_interrupt = await board.digital_interrupt_by_name(HW_INTERRUPT_PIN)
+
+        # We also need a software pwm pin and interrupt pin pair to test software pwm.
+        self.sw_pwm_pin = await board.gpio_pin_by_name(conf.SW_PWM_PIN)
+        self.sw_interrupt = await board.digital_interrupt_by_name(conf.SW_INTERRUPT_PIN)
 
     async def asyncTearDown(self):
         await self.output_pin.set(False)
@@ -52,24 +57,32 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         await self.output_pin.set(value)
         result = await self.input_pin.get()
         self.assertEqual(result, value)
-
-    async def test_interrupts(self):
+    
+    @parameterized.expand((("hw"), ("sw")))
+    async def test_interrupts(self, pwm):
         FREQUENCY = 50 # Hertz
         DURATION = 2 # seconds
         ERROR_FACTOR = 0.05
 
-        await self.pwm_pin.set_pwm_frequency(FREQUENCY)
-        await self.pwm_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
+        if pwm == "hw":
+            pwm_pin = self.hw_pwm_pin
+            interrupt = self.hw_interrupt
+        else:
+            pwm_pin = self.sw_pwm_pin
+            interrupt = self.sw_interrupt
+
+        await pwm_pin.set_pwm_frequency(FREQUENCY)
+        await pwm_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
 
         # Sometimes a board has a small delay between when you set the PWM and
         # when the signal starts outputting. To hopefully compensate for this,
         # we'll wait a short while before we start counting cycles.
         await asyncio.sleep(0.5)
 
-        starting_count = await self.interrupt.value()
+        starting_count = await interrupt.value()
         await asyncio.sleep(DURATION)
-        await self.pwm_pin.set(False) # Turn the output off again
-        ending_count = await self.interrupt.value()
+        await pwm_pin.set(False) # Turn the output off again
+        ending_count = await interrupt.value()
 
         total_count = ending_count - starting_count
         expected_count = FREQUENCY * DURATION
