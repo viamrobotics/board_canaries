@@ -36,7 +36,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             HW_INTERRUPT_PIN = conf.INPUT_PIN
 
         try:
-            HW_PWM_PIN = conf.PWM_PIN
+            HW_PWM_PIN = conf.HW_PWM_PIN
         except AttributeError:
             HW_PWM_PIN = conf.OUTPUT_PIN
             
