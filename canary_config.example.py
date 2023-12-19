@@ -1,5 +1,6 @@
 from viam.rpc.dial import Credentials
 
+
 INPUT_PIN = "16"
 OUTPUT_PIN = "15"
 
