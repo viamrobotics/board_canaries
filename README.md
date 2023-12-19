@@ -8,7 +8,7 @@ Code to run on every board, to run canary tests
 - Install Viam on the physical board, per the Setup tab in the robot you just created. **However,** put the config file in `/etc/viam-canary.json` instead of just `/etc/viam.json`.
 - Jump together 2 pins on your board. Ideally, one of them (the "output" pin) will also have hardware PWM enabled.
   - If you have a board whose GPIO pins cannot also do hardware PWM but you want to test hardware PWM separately, jump together a second set of pins. One set will be to test GPIO input and output, and the other will test hardware PWM output and digital interrupt input.
-  - Also jump together 2 more gpio pins to test software pwm.
+  - Also jump together 2 more gpio pins to test software PWM.
 - Clone this repo onto the board.
 - Run `sudo ./install.sh`
 - Follow the instructions printed at the end of that script:
