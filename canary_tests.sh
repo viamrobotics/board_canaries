@@ -19,8 +19,10 @@ pushd "$this_dir" > /dev/null
 
 systemctl stop viam-canary
 
-# Update RDK. Use the absolute path because the cron job might not have $PATH set correctly.
-/usr/local/bin/viam-server --aix-update
+# Install the latest rdk. Installing instead of upgrading to ensure we get the latest version and don't get stuck on stable.
+curl "https://storage.googleapis.com/packages.viam.com/apps/viam-server/viam-server-latest-$(uname -m).AppImage" -o viam-server
+chmod 755 viam-server
+./viam-server --aix-install
 
 systemctl start viam-canary
 sleep 60 # The server takes some time to set up its connections; don't talk to it too soon.
