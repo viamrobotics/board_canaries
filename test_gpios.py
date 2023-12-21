@@ -66,11 +66,11 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         if pwm == "hw":
             pwm_pin = self.hw_pwm_pin
             interrupt = self.hw_interrupt
-            ERROR_FACTOR = 0.05
+            error_factor = 0.05
         else:
             pwm_pin = self.sw_pwm_pin
             interrupt = self.sw_interrupt
-            ERROR_FACTOR = 0.07
+            error_factor = 0.07
 
         await pwm_pin.set_pwm_frequency(FREQUENCY)
         await pwm_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
@@ -87,7 +87,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
 
         total_count = ending_count - starting_count
         expected_count = FREQUENCY * DURATION
-        allowable_error = expected_count * ERROR_FACTOR
+        allowable_error = expected_count * error_factor
         self.assertAlmostEqual(total_count, expected_count, delta=allowable_error)
 
 
