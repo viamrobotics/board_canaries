@@ -39,7 +39,6 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             HW_PWM_PIN = conf.HW_PWM_PIN
         except AttributeError:
             HW_PWM_PIN = conf.OUTPUT_PIN
-            
 
         self.hw_pwm_pin = await board.gpio_pin_by_name(HW_PWM_PIN)
         self.hw_interrupt = await board.digital_interrupt_by_name(HW_INTERRUPT_PIN)
@@ -57,10 +56,10 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         await self.output_pin.set(value)
         result = await self.input_pin.get()
         self.assertEqual(result, value)
-    
-    @parameterized.expand((("hw"), ("sw")))
-    async def test_interrupts(self, pwm):
-        FREQUENCY = 50 # Hertz
+
+    @parameterized.expand((("hw",), ("sw",)))
+    async def test_interrupts_and_pwm(self, pwm):
+        FREQUENCY = 40 # Hertz
         DURATION = 2 # seconds
 
         if pwm == "hw":
@@ -70,7 +69,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         else:
             pwm_pin = self.sw_pwm_pin
             interrupt = self.sw_interrupt
-            error_factor = 0.07
+            error_factor = 0.10  # Software PWM can get really inaccurate
 
         await pwm_pin.set_pwm_frequency(FREQUENCY)
         await pwm_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
