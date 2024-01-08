@@ -8,7 +8,7 @@ pushd "$this_dir" > /dev/null
 
 # The sed line keeps only the file contents that match the current date and
 # later. This solution was taken from https://stackoverflow.com/a/7104422
-cat /tmp/canary_tests.log |\
+cat /var/log/canary_tests.log |\
 	sed -n "/$(date '+%Y-%m-%d')/,\$p" |\
 	./analyze_logs.py
 
