@@ -9,6 +9,7 @@ from viam.robot.client import RobotClient
 from viam.rpc.dial import DialOptions
 
 import canary_config as conf
+import slack_reporter
 
 
 class GpioTest(unittest.IsolatedAsyncioTestCase):
@@ -17,7 +18,17 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             refresh_interval=0,
             dial_options=DialOptions(credentials=conf.creds)
         )
-        self.robot = await RobotClient.at_address(conf.address, opts)
+
+        try:
+            self.robot = await RobotClient.at_address(conf.address, opts)
+        except ConnectionError:
+            # There's some race condition in the Python SDK that causes
+            # reconnection to fail sometimes.
+            slack_reporter.report_message(
+                "connection error during canary tests. Retrying...")
+            time.sleep(1)
+            self.robot = await RobotClient.at_address(conf.address, opts)
+
         board = Board.from_robot(self.robot, "board")
         self.input_pin = await board.gpio_pin_by_name(conf.INPUT_PIN)
         self.output_pin = await board.gpio_pin_by_name(conf.OUTPUT_PIN)

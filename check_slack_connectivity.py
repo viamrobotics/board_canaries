@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import slack_sdk
-
-import slack_reporter_config as config
+import slack_reporter
 
 
 # This is simultaneously:
@@ -10,7 +8,5 @@ import slack_reporter_config as config
 # 2) an announcement to the Slack channel that there's a new board running
 #     canary tests.
 if __name__ == "__main__":
-    client = slack_sdk.WebClient(token=config.auth_token)
-    text = (f"Canary tests on the {config.board_name} board should be able " +
-            "to report to Slack!")
-    result = client.chat_postMessage(channel=config.channel_id, text=text)
+    text = "the canary tests should be able to report to Slack!"
+    result = slack_reporter.report_message(text)
