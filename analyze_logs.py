@@ -1,35 +1,20 @@
 #!/usr/bin/env python3
 import fileinput # For accessing stdin
 
-import slack_sdk
-
-import slack_reporter_config as config
+import slack_reporter
 
 
 def report_no_output():
-    client = slack_sdk.WebClient(token=config.auth_token)
-    text = (f"The canary tests on the {config.board_name} board had no " +
-            "recent output!")
-    result = client.chat_postMessage(channel=config.channel_id, text=text)
-    # If we get a result, things worked. Failure raises exceptions instead.
-    # Currently, we ignore any errors. The cron job that runs this script
-    # will write all our output (including a stack trace from an uncaught
-    # exception) to /tmp/canary_analysis.log, but there's no obvious way to
-    # tell a human to go look at that. How do we report that we're unable to
-    # report stuff!?
+    text = (f"The canary tests on the {slack_reporter.board_name} board had " +
+             "no recent output!")
+    slack_reporter.report_message(text)
 
 
 def report_errors(output):
-    client = slack_sdk.WebClient(token=config.auth_token)
-    text = (f"The canary tests on the {config.board_name} board have failed. " +
-            "Recent output is:")
+    text = (f"The canary tests on the {slack_reporter.board_name} board have " +
+            "failed. Recent output is:")
     file_contents = "\n".join(output)
-
-    result = client.files_upload_v2(
-        channel=config.channel_id, content=file_contents, snippet_type="text",
-        filename="canary_tests.log", initial_comment=text)
-    # Again, if things fail we'll raise an exception here, but there is no
-    # obvious resolution for that.
+    slack_reporter.report_file("canary_tests.log", file_contents, text)
 
 
 def tests_succeeded(contents):
