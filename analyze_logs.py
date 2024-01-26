@@ -17,10 +17,10 @@ if __name__ == "__main__":
         "+ exit 0",
         ]
     if contents[-len(expected_contents):] != expected_contents:
-        if contents == []:
+        if contents == [] or contents == [""]:
             slack_reporter.report_message(
                 "the canary tests had no recent output!")
         else:
             text = "the canary tests have failed. Recent output is:"
-            file_contents = "\n".join(output)
+            file_contents = "\n".join(contents)
             slack_reporter.report_file("canary_tests.log", file_contents, text)

@@ -25,7 +25,7 @@ def report_file(filename, contents, comment):
     text = add_preamble(comment)
     client = slack_sdk.WebClient(token=config.auth_token)
     result = client.files_upload_v2(
-        channel=config.channel_id, content=file_contents, snippet_type="text",
+        channel=config.channel_id, content=contents, snippet_type="text",
         filename="canary_tests.log", initial_comment=text)
     # Again, if things fail we'll raise an exception here, but there is no
     # obvious resolution for that.
