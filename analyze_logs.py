@@ -5,14 +5,11 @@ import slack_reporter
 
 
 def report_no_output():
-    text = (f"The canary tests on the {slack_reporter.board_name} board had " +
-             "no recent output!")
-    slack_reporter.report_message(text)
+    slack_reporter.report_message("the canary tests had no recent output!")
 
 
 def report_errors(output):
-    text = (f"The canary tests on the {slack_reporter.board_name} board have " +
-            "failed. Recent output is:")
+    text = "the canary tests have failed. Recent output is:"
     file_contents = "\n".join(output)
     slack_reporter.report_file("canary_tests.log", file_contents, text)
 

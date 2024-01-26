@@ -25,7 +25,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             # There's some race condition in the Python SDK that causes
             # reconnection to fail sometimes.
             slack_reporter.report_message(
-                f"Connection error on the {slack_reporter.board_name}.")
+                "connection error during canary tests. Retrying...")
             time.sleep(1)
             self.robot = await RobotClient.at_address(conf.address, opts)
 

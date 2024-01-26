@@ -4,12 +4,14 @@ import slack_sdk
 import slack_reporter_config as config
 
 
-# Re-export this value
-board_name = config.board_name
+def add_preamble(message):
+    return f"The {config.board_name} says: {message}"
+
 
 def report_message(message):
+    text = add_preamble(message)
     client = slack_sdk.WebClient(token=config.auth_token)
-    result = client.chat_postMessage(channel=config.channel_id, text=message)
+    result = client.chat_postMessage(channel=config.channel_id, text=text)
     # If we get a result, things worked. Failure raises exceptions instead.
     # Currently, we ignore any errors. The cron job that runs this script
     # will write all our output (including a stack trace from an uncaught
@@ -20,6 +22,7 @@ def report_message(message):
 
 
 def report_file(filename, contents, comment):
+    text = add_preamble(comment)
     client = slack_sdk.WebClient(token=config.auth_token)
     result = client.files_upload_v2(
         channel=config.channel_id, content=file_contents, snippet_type="text",
