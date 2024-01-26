@@ -5,8 +5,9 @@ import slack_reporter
 
 
 if __name__ == "__main__":
-    # Most lines from stdin end in a newline, but maybe not the last one. To give a more uniform
-    # interface, we strip out all trailing whitespace here, and maybe add newlines back later.
+    # Most lines from stdin end in a newline, but maybe not the last one. To
+    # give a more uniform interface, we strip out all trailing whitespace here,
+    # and maybe add newlines back later.
     contents = [line.rstrip() for line in fileinput.input()]
     expected_contents = [
         "OK",
