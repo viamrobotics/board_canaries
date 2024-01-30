@@ -2,6 +2,7 @@
 
 import asyncio
 from parameterized import parameterized
+import time
 import unittest
 
 from viam.components.board import Board
