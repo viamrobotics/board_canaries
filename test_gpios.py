@@ -43,7 +43,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
                            "xargs kill -10", shell=True)
             slack_reporter.report_message(
                 "connection error during canary tests. Retrying...")
-            time.sleep(1)
+            time.sleep(5)
             self.robot = await RobotClient.at_address(conf.address, opts)
 
         board = Board.from_robot(self.robot, "board")
