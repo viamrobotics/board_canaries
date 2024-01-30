@@ -2,6 +2,7 @@
 
 import asyncio
 from parameterized import parameterized
+import subprocess
 import time
 import unittest
 
@@ -24,7 +25,13 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             self.robot = await RobotClient.at_address(conf.address, opts)
         except ConnectionError:
             # There's some race condition in the Python SDK that causes
-            # reconnection to fail sometimes.
+            # reconnection to fail sometimes. See if we can figure out what
+            # the RDK server is doing that causes this trouble. We can get
+            # stack traces from any go process by sending a SIGQUIT (signal 3)
+            # which will then exit the process, but we don't want it to exit.
+            # Instead, we send a SIGUSR1 (signal 10), which should log stack
+            # traces from all goroutines but then *not* shut down the server.
+            subprocess.run(["pkill", "--signal", "10", "viam-server"])
             slack_reporter.report_message(
                 "connection error during canary tests. Retrying...")
             time.sleep(1)
