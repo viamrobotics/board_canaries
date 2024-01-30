@@ -26,12 +26,21 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         except ConnectionError:
             # There's some race condition in the Python SDK that causes
             # reconnection to fail sometimes. See if we can figure out what
-            # the RDK server is doing that causes this trouble. We can get
-            # stack traces from any go process by sending a SIGQUIT (signal 3)
-            # which will then exit the process, but we don't want it to exit.
-            # Instead, we send a SIGUSR1 (signal 10), which should log stack
-            # traces from all goroutines but then *not* shut down the server.
-            subprocess.run(["pkill", "--signal", "10", "viam-server"])
+            # the RDK server is doing that causes this trouble. Send a SIGUSR1
+            # (signal 10), which should log stack traces from all goroutines.
+            # The next tricky part here is that there might be 2 RDK servers
+            # running: the "normal" one on port 8080 and the board canary one
+            # on port 9090. We want to only send the signal to the latter. We
+            # achieve that by finding all processes, filtering for the ones
+            # that look like RDK servers, filtering for the ones that mention
+            # the canary config, and then removing all output from `ps` except
+            # the process ID.
+            subprocess.run("ps aux |" +
+                           "grep viam-server |" +
+                           "grep viam-canary.json |" +
+                           "sed 's/^[^ ]* *//g' |" +
+                           "sed 's/ .*$//g' |" +
+                           "xargs kill -10", shell=True)
             slack_reporter.report_message(
                 "connection error during canary tests. Retrying...")
             time.sleep(1)
