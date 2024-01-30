@@ -2,6 +2,8 @@
 
 import asyncio
 from parameterized import parameterized
+import subprocess
+import time
 import unittest
 
 from viam.components.board import Board
@@ -23,10 +25,17 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             self.robot = await RobotClient.at_address(conf.address, opts)
         except ConnectionError:
             # There's some race condition in the Python SDK that causes
-            # reconnection to fail sometimes.
+            # reconnection to fail sometimes. See if we can figure out what
+            # the RDK server is doing that causes this trouble. Send a SIGUSR1
+            # (signal 10), which should log stack traces from all goroutines.
+            # The tricky part here is that there might be 2 RDK servers
+            # running: the "normal" one on port 8080 and the board canary one
+            # on port 9090. We want to only send the signal to the latter.
+            subprocess.run(["pkill", "-10", "-f", "viam-canary.json"],
+                           shell=True)
             slack_reporter.report_message(
                 "connection error during canary tests. Retrying...")
-            time.sleep(1)
+            time.sleep(5)
             self.robot = await RobotClient.at_address(conf.address, opts)
 
         board = Board.from_robot(self.robot, "board")

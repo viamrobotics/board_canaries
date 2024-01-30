@@ -25,7 +25,7 @@ chmod 755 viam-server
 ./viam-server --aix-install
 
 systemctl start viam-canary
-sleep 60 # The server takes some time to set up its connections; don't talk to it too soon.
+sleep 120 # The server takes some time to set up its connections; don't talk to it too soon.
 
 git pull --ff-only origin main # Update the test script if necessary
 
