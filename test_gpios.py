@@ -35,7 +35,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             # that look like RDK servers, filtering for the ones that mention
             # the canary config, and then removing all output from `ps` except
             # the process ID.
-            subprocess.run("ps aux |" +
+            subprocess.run("ps aux --cols 1000|" +
                            "grep viam-server |" +
                            "grep viam-canary.json |" +
                            "sed 's/^[^ ]* *//g' |" +
