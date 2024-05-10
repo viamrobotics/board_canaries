@@ -94,7 +94,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         # In order to diagnose a flaky test, we're going to record all tick-related data.
         should_stop = asyncio.Event()
         ticks = []
-        counter_task = asyncio.create_task(record_tick_data(tick_stream, ticks, should_stop))
+        counter_task = asyncio.create_task(self.record_tick_data(tick_stream, ticks, should_stop))
 
         await pwm_pin.set_pwm_frequency(FREQUENCY)
         await pwm_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
@@ -121,6 +121,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         allowable_error = expected_count * error_factor
         self.assertAlmostEqual(total_count, expected_count, delta=allowable_error)
 
+    @staticmethod
     async def record_tick_data(tick_stream, data, should_stop):
         async for tick in tick_stream:
             data.append((tick.time, tick.high, tick.pin_name))
