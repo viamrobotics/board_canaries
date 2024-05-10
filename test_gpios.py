@@ -91,6 +91,11 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             interrupt = self.sw_interrupt
             error_factor = 0.10  # Software PWM can get really inaccurate
 
+        # In order to diagnose a flaky test, we're going to record all tick-related data.
+        should_stop = asyncio.Event()
+        ticks = []
+        counter_task = asyncio.create_task(record_tick_data(tick_stream, ticks, should_stop))
+
         await pwm_pin.set_pwm_frequency(FREQUENCY)
         await pwm_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
 
@@ -101,13 +106,26 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
 
         starting_count = await interrupt.value()
         await asyncio.sleep(DURATION)
+        should_stop.set()
+
+        await counter_task
         await pwm_pin.set(False) # Turn the output off again
+        print("data from tick stream:")
+        for tick in ticks:
+            print(tick)
+
         ending_count = await interrupt.value()
 
         total_count = ending_count - starting_count
         expected_count = FREQUENCY * DURATION
         allowable_error = expected_count * error_factor
         self.assertAlmostEqual(total_count, expected_count, delta=allowable_error)
+
+    async def record_tick_data(tick_stream, data, should_stop):
+        async for tick in tick_stream:
+            data.append((tick.time, tick.high, tick.pin_name))
+            if should_stop.is_set():
+                return
 
 
 if __name__ == "__main__":
