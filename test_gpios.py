@@ -109,8 +109,8 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         await asyncio.sleep(DURATION)
         should_stop.set()
         await counter_task
-
         await pwm_pin.set(False) # Turn the output off again
+
         print("data from tick stream:")
         for tick in ticks:
             print(tick)
