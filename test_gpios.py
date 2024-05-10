@@ -38,9 +38,9 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             time.sleep(5)
             self.robot = await RobotClient.at_address(conf.address, opts)
 
-        board = Board.from_robot(self.robot, "board")
-        self.input_pin = await board.gpio_pin_by_name(conf.INPUT_PIN)
-        self.output_pin = await board.gpio_pin_by_name(conf.OUTPUT_PIN)
+        self.board = Board.from_robot(self.robot, "board")
+        self.input_pin = await self.board.gpio_pin_by_name(conf.INPUT_PIN)
+        self.output_pin = await self.board.gpio_pin_by_name(conf.OUTPUT_PIN)
 
         # Most boards have combination GPIO/PWM/interrupt pins. However, rarely
         # they are separated to different pins (e.g., the Beaglebone AI-64 does
@@ -60,12 +60,12 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         except AttributeError:
             HW_PWM_PIN = conf.OUTPUT_PIN
 
-        self.hw_pwm_pin = await board.gpio_pin_by_name(HW_PWM_PIN)
-        self.hw_interrupt = await board.digital_interrupt_by_name(HW_INTERRUPT_PIN)
+        self.hw_pwm_pin = await self.board.gpio_pin_by_name(HW_PWM_PIN)
+        self.hw_interrupt = await self.board.digital_interrupt_by_name(HW_INTERRUPT_PIN)
 
         # We also need a software pwm pin and interrupt pin pair to test software pwm.
-        self.sw_pwm_pin = await board.gpio_pin_by_name(conf.SW_PWM_PIN)
-        self.sw_interrupt = await board.digital_interrupt_by_name(conf.SW_INTERRUPT_PIN)
+        self.sw_pwm_pin = await self.board.gpio_pin_by_name(conf.SW_PWM_PIN)
+        self.sw_interrupt = await self.board.digital_interrupt_by_name(conf.SW_INTERRUPT_PIN)
 
     async def asyncTearDown(self):
         await self.output_pin.set(False)
@@ -94,6 +94,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
         # In order to diagnose a flaky test, we're going to record all tick-related data.
         should_stop = asyncio.Event()
         ticks = []
+        tick_stream = await self.board.stream_ticks([interrupt])
         counter_task = asyncio.create_task(self.record_tick_data(tick_stream, ticks, should_stop))
 
         await pwm_pin.set_pwm_frequency(FREQUENCY)
