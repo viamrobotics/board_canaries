@@ -9,14 +9,20 @@ if __name__ == "__main__":
     # give a more uniform interface, we strip out all trailing whitespace here,
     # and maybe add newlines back later.
     contents = [line.rstrip() for line in fileinput.input()]
+    # In May 2024, we began logging extra information about interrupt ticks,
+    # to better diagnose a PWM issue on the Orin and Orin Nano. Ignore that
+    # output here.
+    filtered_contents = [line for line in contents if not line.startswith("(")]
     expected_contents = [
         "OK",
+        # TODO: remember to take this out again if we remove the diagnostics!
+        "data from tick stream:",
         "+ echo 'done running tests!'",
         "done running tests!",
         "+ popd",
         "+ exit 0",
         ]
-    if contents[-len(expected_contents):] != expected_contents:
+    if filtered_contents[-len(expected_contents):] != expected_contents:
         if contents == [] or contents == [""]:
             slack_reporter.report_message(
                 "the canary tests had no recent output!")
