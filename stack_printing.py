@@ -1,3 +1,4 @@
+import asyncio
 import signal
 import sys
 import threading
@@ -20,6 +21,10 @@ def print_all_stacks(signum, frame):
         stack = traceback.extract_stack(frame)
         for file_name, line_number, function_name, source in stack:
             print(f"  {file_name}:{line_number} @{function_name}: {source}")
+
+    # Now, do the same thing for active coroutines.
+    for task in asyncio.all_tasks():
+        task.print_stack()
 
 
 # Whenever we receive a SIGUSR1 (the first user-defined interrupt signal), we
