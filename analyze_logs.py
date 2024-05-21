@@ -2,6 +2,7 @@
 import fileinput # For accessing stdin
 
 import slack_reporter
+import stack_printing  # Set up the ability to print stack traces on SIGUSR1
 
 
 if __name__ == "__main__":
