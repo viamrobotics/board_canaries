@@ -20,7 +20,8 @@ def print_all_stacks(signum, frame):
         print(f"Thread {thread_names.get(thread_id, 'Unknown')}:")
         stack = traceback.extract_stack(frame)
         for file_name, line_number, function_name, source in stack:
-            print(f"  {file_name}:{line_number} @{function_name}: {source}")
+            print(f"  File {file_name}, line {line_number}, in @{function_name}")
+            print(f"    {source}")
 
     # Now, do the same thing for active coroutines.
     for task in asyncio.all_tasks():
