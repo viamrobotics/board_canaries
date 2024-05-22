@@ -34,8 +34,7 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             # on port 9090. We want to only send the signal to the latter.
             subprocess.run(["pkill", "-10", "-f", "viam-canary.json"],
                            shell=True)
-            slack_reporter.report_message(
-                "connection error during canary tests. Retrying...")
+            print("Connection error during canary tests. Retrying...")
             time.sleep(5)
             self.robot = await RobotClient.at_address(conf.address, opts)
 
