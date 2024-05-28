@@ -19,10 +19,19 @@ pushd "$this_dir" > /dev/null
 
 systemctl stop viam-canary
 
-# Install the latest rdk. Installing instead of upgrading to ensure we get the latest version and don't get stuck on stable.
-curl "https://storage.googleapis.com/packages.viam.com/apps/viam-server/viam-server-latest-$(uname -m).AppImage" -o viam-server
+# Install the latest RDK. We install it anew instead of upgrading to ensure we get the latest
+# version and don't get stuck on the stable releases, even if something else moved us to stable.
+curl "https://storage.googleapis.com/packages.viam.com/apps/viam-server/viam-server-latest-$(uname -m)" -o viam-server
 chmod 755 viam-server
-./viam-server --aix-install
+# If viam-agent.service and viam-server.service are both running simultaneously, one will get stuck
+# in a restart loop because it cannot bind to port 8080 because the other is using it.  Instead of
+# running `./viam-server --aix-install` (which might re-enable a disabled systemctl service, or add
+# in the Viam Agent or similar), we just copy the binary over.
+#
+# First, double-check that the binary exists. Because of the `set -e` at the top, if this next line
+# fails, we exit the whole test immediately.
+test -n "$(which viam-server)"
+mv viam-server "$(which viam-server)"
 
 systemctl start viam-canary
 sleep 120 # The server takes some time to set up its connections; don't talk to it too soon.
