@@ -27,6 +27,11 @@ def print_all_stacks(signum, frame):
     for task in asyncio.all_tasks():
         task.print_stack()
 
+    # When we write to a file, the Python interpreter buffers the output. We
+    # flush the buffer immediately, so that the output should get into the
+    # file immediately.
+    sys.stdout.flush()
+
 
 # Whenever we receive a SIGUSR1 (the first user-defined interrupt signal), we
 # print stack traces of all running threads.
