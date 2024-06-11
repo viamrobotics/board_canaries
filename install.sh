@@ -49,5 +49,5 @@ echo "- Copy slack_reporter_config.example.py into slack_reporter_config.py"
 echo "    and edit it to be specific to your board."
 # This next one could be automated, but should not be done by the root user, and the rest of this
 # script is run as root.
-echo "- Run 'cat board_canary.pub >> ~/.ssh/authorized_keys'"
-echo "- Make a PR that updates monitor_other_boards.py to include the new board"
+echo "- Run 'cat board_canary.pub >> ~/.ssh/authorized_keys'."
+echo "- Make a PR that updates monitor_other_boards.py to include the new board."
