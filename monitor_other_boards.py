@@ -6,7 +6,7 @@ import slack_reporter
 
 #                SSH target               name
 all_boards = (("odroid@odroid",         "odroid-C4"),
-              ("orangepi@oliviaorange", "orange pi zero 2"),
+              ("orangepi@oliviaorange", "orange pi 02"),
               ("viam@viam",             "Up 4000"),
               ("viam@orinnanodevkit2",  "Orin Nano"),
               # The Orin AGX is unable to get on tailscale, and mDNS is not
