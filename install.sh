@@ -40,13 +40,14 @@ echo ""
 echo "%%%%%%%%%%%%%"
 echo "% REMINDER! %"
 echo "%%%%%%%%%%%%%"
-echo "There are four manual things to do:"
+echo "There are five manual things to do:"
 echo "- Set up a robot on app.viam.com, and download its config to"
 echo "    /etc/viam-canary.json (not the default /etc/viam.json!)."
 echo "- Copy canary_config.example.py into canary_config.py and edit it to be"
 echo "    specific to your board."
 echo "- Copy slack_reporter_config.example.py into slack_reporter_config.py"
 echo "    and edit it to be specific to your board."
-# This last one could be automated, but should not be done by the root user, and the rest of this
+# This next one could be automated, but should not be done by the root user, and the rest of this
 # script is run as root.
 echo "- Run 'cat board_canary.pub >> ~/.ssh/authorized_keys'"
+echo "- Make a PR that updates monitor_other_boards.py to include the new board"
