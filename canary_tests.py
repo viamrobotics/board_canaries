@@ -11,7 +11,6 @@ from viam.robot.client import RobotClient
 from viam.rpc.dial import DialOptions
 
 import canary_config as conf
-import slack_reporter
 import stack_printing  # Set up the ability to print stack traces on SIGUSR1
 
 
