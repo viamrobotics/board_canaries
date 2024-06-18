@@ -15,7 +15,7 @@ import slack_reporter
 import stack_printing  # Set up the ability to print stack traces on SIGUSR1
 
 
-class GpioTest(unittest.IsolatedAsyncioTestCase):
+class PinTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         opts = RobotClient.Options(
             refresh_interval=0,
@@ -129,7 +129,8 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             if should_stop.is_set():
                 return
 
-    async def test_monitor(self):
+class PingMonitorTest(unittest.TestCase):
+    def test_monitor_is_pingable(self):
         """
         One board canary is designated the "canary monitor," and makes sure
         that all other canaries are online, reachable, and have run their
