@@ -33,8 +33,10 @@ def ensure_board_is_online(ssh_target, name):
         return
     if subprocess_result.returncode != 0:
         slack_reporter.report_message(f"Cannot read from the {name} board!")
+        return
     if subprocess_result.stdout != b"1\n":
         slack_reporter.report_message(f"Unexpected logs on the {name} board!")
+        return
 
 
 if __name__ == "__main__":
