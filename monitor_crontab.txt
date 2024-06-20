@@ -1,9 +1,0 @@
-# Most board canaries should not use this file, but one of them needs to have a cron job to monitor
-# all the others. This file is a sketch of a file that should be dropped into /etc/cron.d on that
-# one board. You should modify CANARY_DIR to its actual value before copying it over.
-
-SHELL=/bin/sh
-
-# The canary tests run at 2:30 AM, the analysis runs at 2:45. By 3:00, all boards should have
-# finished everything, and we should be able to check on them.
-00 3 * * *   root   CANARY_DIR/canary_tests.sh >> /var/log/canary_monitor.log 2>&1

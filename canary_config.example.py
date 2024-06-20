@@ -15,7 +15,3 @@ creds = Credentials(
     type="robot-location-secret",
     payload="put-the-secret-here")
 address = "address-for-robot.viam.cloud"
-
-# Most canaries should leave this as None, but we need at least one to set it to whichever board is
-# making sure all the others are online (e.g., "bogglebean").
-ssh_monitor = None
