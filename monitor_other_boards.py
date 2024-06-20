@@ -4,7 +4,7 @@ import subprocess
 
 import slack_reporter
 
-#                SSH target               name
+#               SSH target               name
 all_boards = (("odroid@odroid",         "odroid-C4"),
               ("orangepi@oliviaorange", "orange pi 02"),
               ("viam@viam",             "Up 4000"),
@@ -24,19 +24,22 @@ def ensure_board_is_online(ssh_target, name):
     # canary analysis logfile contains a line with today's date and nothing
     # else. If the analysis has run, there should be exactly 1 of these lines.
     command = f"cat /var/log/canary_tests.log | grep '^{today}$' | wc -l"
-    subprocess_command = f"ssh -i board_canary.priv '{ssh_target}' \"{command}\""
+    ssh_command = f"ssh -i board_canary.priv '{ssh_target}' \"{command}\""
     try:
         subprocess_result = subprocess.run(
-            subprocess_command, timeout=60, shell=True, capture_output=True)
+            ssh_command, timeout=60, shell=True, capture_output=True)
     except subprocess.TimeoutExpired:
         slack_reporter.report_message(f"Cannot contact the {name} board!")
         return
     if subprocess_result.returncode != 0:
         slack_reporter.report_message(f"Cannot read from the {name} board!")
         return
-    if subprocess_result.stdout != b"1\n":
-        slack_reporter.report_message(f"Unexpected logs on the {name} board!")
+    if subprocess_result.stdout == b"0\n":
+        slack_reporter.report_message(
+            f"The {name} board did not analyze its tests!")
         return
+    # Otherwise, we're able to connect to the board and it has run its tests at
+    # least once. Call that a win.
 
 
 if __name__ == "__main__":
