@@ -9,9 +9,7 @@ all_boards = (("odroid@odroid",         "odroid-C4"),
               ("orangepi@oliviaorange", "orange pi 02"),
               ("viam@viam",             "Up 4000"),
               ("viam@orinnanodevkit2",  "Orin Nano"),
-              # The Orin AGX is unable to get on tailscale, and mDNS is not
-              # very reliable. but its IP address (almost?) never changes.
-              ("viam@10.1.8.37",        "Orin AGX"),
+              ("viam@orindevkit2",      "Orin AGX"),
               ("debian@bogglebean",     "Beaglebone AI-64"),
               ("canary@pi5canary",      "rpi5"),
               )
