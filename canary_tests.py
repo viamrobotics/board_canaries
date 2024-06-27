@@ -136,10 +136,10 @@ class PingMonitorTest(unittest.IsolatedAsyncioTestCase):
         in charge of making sure the canary monitor is online, and that's what
         this test is about.
         """
-        if config.board_monitor is None:
+        if conf.board_monitor is None:
             return  # No monitor to connect to
 
-        address, creds = config.board_monitor
+        address, creds = conf.board_monitor
         robot = await RobotClient.at_address(address, creds)
         await robot.close()
 
