@@ -1,4 +1,4 @@
-from viam.rpc.dial import Credentials
+from viam.robot.client import RobotClient
 
 
 INPUT_PIN = "16"
@@ -11,7 +11,12 @@ OUTPUT_PIN = "15"
 SW_PWM_PIN = "20"
 SW_INTERRUPT_PIN = "21"
 
-creds = Credentials(
-    type="robot-location-secret",
-    payload="put-the-secret-here")
+creds = RobotClient.Options.with_api_key(
+    api_key="secret-api-key",
+    api_key_id="put-the-secret-id-here")
 address = "address-for-robot.viam.cloud"
+
+# Most canaries should leave this as None, but we need at least one to set it to whichever board is
+# making sure all the others are online. When set, it should be a pair of (address, creds) to
+# connect to that robot.
+board_monitor = None

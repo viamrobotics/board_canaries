@@ -11,11 +11,10 @@ from viam.robot.client import RobotClient
 from viam.rpc.dial import DialOptions
 
 import canary_config as conf
-import slack_reporter
 import stack_printing  # Set up the ability to print stack traces on SIGUSR1
 
 
-class GpioTest(unittest.IsolatedAsyncioTestCase):
+class PinTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         opts = RobotClient.Options(
             refresh_interval=0,
@@ -128,6 +127,21 @@ class GpioTest(unittest.IsolatedAsyncioTestCase):
             data.append((tick.time, tick.high, tick.pin_name))
             if should_stop.is_set():
                 return
+
+class PingMonitorTest(unittest.IsolatedAsyncioTestCase):
+    async def test_monitor_is_online(self):
+        """
+        One board canary is designated the "canary monitor," and makes sure
+        that all other canaries are online. There is a different canary that's
+        in charge of making sure the canary monitor is online, and that's what
+        this test is about.
+        """
+        if conf.board_monitor is None:
+            return  # No monitor to connect to
+
+        address, creds = conf.board_monitor
+        robot = await RobotClient.at_address(address, creds)
+        await robot.close()
 
 
 if __name__ == "__main__":

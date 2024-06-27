@@ -36,7 +36,7 @@ echo "running tests..."
 export RUST_BACKTRACE=full
 # The cron job that runs our script writes stdout to file. If something goes wrong in the tests, it
 # will be written to stderr. Redirect that to stdout so it gets written to file, too.
-./test_gpios.py 2>&1
+./canary_tests.py 2>&1
 echo "done running tests!"
 
 popd > /dev/null # pushd "$this_dir"
