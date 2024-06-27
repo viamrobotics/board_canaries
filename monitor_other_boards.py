@@ -26,8 +26,8 @@ async def main():
     for name, address, creds in monitor_config.all_boards:
         print(f"now checking the {name} board...")
         try:
-            async with RobotClient.at_address(address, creds) as robot:
-                pass
+            robot = await RobotClient.at_address(address, creds)
+            await robot.close()
         except:
             # If there's a problem connecting to the board, it's possible
             # we'll want to see details later. Print them here, so they'll be
