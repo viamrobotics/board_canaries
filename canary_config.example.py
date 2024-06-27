@@ -19,4 +19,4 @@ address = "address-for-robot.viam.cloud"
 # Most canaries should leave this as None, but we need at least one to set it to whichever board is
 # making sure all the others are online. When set, it should be a pair of (address, creds) to
 # connect to that robot.
-ssh_monitor = None
+board_monitor = None

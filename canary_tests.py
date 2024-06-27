@@ -129,20 +129,19 @@ class PinTests(unittest.IsolatedAsyncioTestCase):
                 return
 
 class PingMonitorTest(unittest.TestCase):
-    def test_monitor_is_pingable(self):
+    async def test_monitor_is_online(self):
         """
         One board canary is designated the "canary monitor," and makes sure
-        that all other canaries are online, reachable, and have run their
-        analysis in the past day. There is a different canary that's in charge
-        of making sure the canary monitor is online, and that's what this test
-        is about.
+        that all other canaries are online. There is a different canary that's
+        in charge of making sure the canary monitor is online, and that's what
+        this test is about.
         """
-        if config.ssh_monitor is None:
-            return  # No monitor to ping
+        if config.board_monitor is None:
+            return  # No monitor to connect to
 
-        subprocess_result = subprocess.run(
-            ["ping", "-c", "1", config.ssh_monitor], timeout=30)
-        self.assertEqual(subprocess_result.returncode, 0)
+        address, creds = config.board_monitor
+        robot = await RobotClient.at_address(address, creds)
+        await robot.close()
 
 
 if __name__ == "__main__":
