@@ -7,16 +7,6 @@ from viam.robot.client import RobotClient
 import monitor_config
 import slack_reporter
 
-#               SSH target               name
-all_boards = (("odroid@odroid",         "odroid-C4"),
-              ("orangepi@oliviaorange", "orange pi 02"),
-              ("viam@viam",             "Up 4000"),
-              ("viam@orinnanodevkit2",  "Orin Nano"),
-              ("viam@orindevkit2",      "Orin AGX"),
-              ("debian@bogglebean",     "Beaglebone AI-64"),
-              ("canary@pi5canary",      "rpi5"),
-              )
-
 
 async def main():
     # Monkey-patch the board name to indicate on Slack that it's acting as the
