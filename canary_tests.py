@@ -128,7 +128,7 @@ class PinTests(unittest.IsolatedAsyncioTestCase):
             if should_stop.is_set():
                 return
 
-class PingMonitorTest(unittest.TestCase):
+class PingMonitorTest(unittest.IsolatedAsyncioTestCase):
     async def test_monitor_is_online(self):
         """
         One board canary is designated the "canary monitor," and makes sure
