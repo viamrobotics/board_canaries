@@ -4,8 +4,8 @@ import traceback
 
 from viam.robot.client import RobotClient
 
-import slack_reporter
 import monitor_config
+import slack_reporter
 
 #               SSH target               name
 all_boards = (("odroid@odroid",         "odroid-C4"),
