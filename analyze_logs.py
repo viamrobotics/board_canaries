@@ -14,7 +14,8 @@ if __name__ == "__main__":
     # to better diagnose a PWM issue on the Orin and Orin Nano. Ignore that
     # output here.
     filtered_contents = [line for line in contents
-                         if not line.startswith("(") and line != "data from tick stream:"]
+                         if not line.startswith("(") and
+                             line != "data from tick stream:"]
 
     expected_contents = [
         "OK",
