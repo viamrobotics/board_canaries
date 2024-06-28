@@ -6,6 +6,7 @@ from viam.robot.client import RobotClient
 
 import monitor_config
 import slack_reporter
+import stack_printing  # Set up the ability to print stack traces on SIGUSR1
 
 
 async def main():
