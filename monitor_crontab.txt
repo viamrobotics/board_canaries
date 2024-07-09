@@ -3,7 +3,9 @@
 # /etc/cron.d on that one board. You should modify CANARY_DIR to its actual value before copying
 # it over.
 
-SHELL=/bin/sh
+# If we ever need a virtual environment to run Python, remember to use bash as the shell, and not
+# just sh! The sh shell doesn't know what `source` is, so sourcing the venv fails.
+SHELL=/bin/bash
 
 # The canary tests run at 2:30 AM, the analysis runs at 2:45. If boards are still online at 3:00,
 # they probably ran the tests, so we should check on them then.
