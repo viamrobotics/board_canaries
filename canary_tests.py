@@ -148,10 +148,8 @@ class PingMonitorTest(unittest.IsolatedAsyncioTestCase):
             return  # No monitor to connect to
 
         address, creds = conf.board_monitor
-        opts = RobotClient.Options(
-            dial_options=DialOptions(credentials=creds, timeout=30)
-        )
-        robot = await RobotClient.at_address(address, opts)
+        creds.Timeout = 30
+        robot = await RobotClient.at_address(address, creds)
         await robot.close()
 
 
