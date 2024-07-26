@@ -18,7 +18,7 @@ class PinTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         opts = RobotClient.Options(
             refresh_interval=0,
-            dial_options=DialOptions(credentials=conf.creds)
+            dial_options=DialOptions(credentials=conf.creds, timeout=30)
         )
 
         try:
@@ -148,7 +148,10 @@ class PingMonitorTest(unittest.IsolatedAsyncioTestCase):
             return  # No monitor to connect to
 
         address, creds = conf.board_monitor
-        robot = await RobotClient.at_address(address, creds)
+        opts = RobotClient.Options(
+            dial_options=DialOptions(credentials=creds, timeout=30)
+        )
+        robot = await RobotClient.at_address(address, opts)
         await robot.close()
 
 
