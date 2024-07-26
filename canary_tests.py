@@ -14,28 +14,32 @@ import canary_config as conf
 import stack_printing  # Set up the ability to print stack traces on SIGUSR1
 
 
+async def connect(address, opts):
+    try:
+        robot = await RobotClient.at_address(address, opts)
+    except ConnectionError:
+        # There's some race condition in the Python SDK that causes
+        # reconnection to fail sometimes. See if we can figure out what
+        # the RDK server is doing that causes this trouble. Send a SIGUSR1
+        # (signal 10), which should log stack traces from all goroutines.
+        # The tricky part here is that there might be 2 RDK servers
+        # running: the "normal" one on port 8080 and the board canary one
+        # on port 9090. We want to only send the signal to the latter.
+        subprocess.run(["pkill", "-10", "-f", "viam-canary.json"],
+                       shell=True)
+        print("Connection error during canary tests. Retrying...")
+        time.sleep(5)
+        robot = await RobotClient.at_address(conf.address, opts)
+    return robot
+
+
 class PinTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         opts = RobotClient.Options(
             refresh_interval=0,
             dial_options=DialOptions(credentials=conf.creds, timeout=30)
         )
-
-        try:
-            self.robot = await RobotClient.at_address(conf.address, opts)
-        except ConnectionError:
-            # There's some race condition in the Python SDK that causes
-            # reconnection to fail sometimes. See if we can figure out what
-            # the RDK server is doing that causes this trouble. Send a SIGUSR1
-            # (signal 10), which should log stack traces from all goroutines.
-            # The tricky part here is that there might be 2 RDK servers
-            # running: the "normal" one on port 8080 and the board canary one
-            # on port 9090. We want to only send the signal to the latter.
-            subprocess.run(["pkill", "-10", "-f", "viam-canary.json"],
-                           shell=True)
-            print("Connection error during canary tests. Retrying...")
-            time.sleep(5)
-            self.robot = await RobotClient.at_address(conf.address, opts)
+        self.robot = await connect(conf.address, opts)
 
         self.board = Board.from_robot(self.robot, "board")
         self.input_pin = await self.board.gpio_pin_by_name(conf.INPUT_PIN)
@@ -149,7 +153,7 @@ class PingMonitorTest(unittest.IsolatedAsyncioTestCase):
 
         address, creds = conf.board_monitor
         creds.Timeout = 30
-        robot = await RobotClient.at_address(address, creds)
+        robot = await connect(address, creds)
         await robot.close()
 
 
