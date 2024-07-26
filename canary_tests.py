@@ -15,7 +15,6 @@ import stack_printing  # Set up the ability to print stack traces on SIGUSR1
 
 
 async def connect(address, opts):
-    opts.timeout = 30
     try:
         robot = await RobotClient.at_address(address, opts)
     except ConnectionError:
