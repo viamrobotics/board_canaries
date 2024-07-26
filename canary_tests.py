@@ -15,6 +15,7 @@ import stack_printing  # Set up the ability to print stack traces on SIGUSR1
 
 
 async def connect(address, opts):
+    opts.timeout = 30
     try:
         robot = await RobotClient.at_address(address, opts)
     except ConnectionError:
@@ -37,7 +38,7 @@ class PinTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         opts = RobotClient.Options(
             refresh_interval=0,
-            dial_options=DialOptions(credentials=conf.creds, timeout=30)
+            dial_options=DialOptions(credentials=conf.creds)
         )
         self.robot = await connect(conf.address, opts)
 
@@ -152,7 +153,6 @@ class PingMonitorTest(unittest.IsolatedAsyncioTestCase):
             return  # No monitor to connect to
 
         address, creds = conf.board_monitor
-        creds.Timeout = 30
         robot = await connect(address, creds)
         await robot.close()
 
