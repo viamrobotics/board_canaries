@@ -19,6 +19,11 @@ pushd "$this_dir" > /dev/null
 
 systemctl stop viam-canary
 
+# It's possible that someone like Alan or Olivia was working on this board earlier in the day,
+# forgot to clean up what they were doing, and now the relevant pins are in use and can't also be
+# used by the canary tests. Stop what that was, so we don't get spurious test failures.
+systemctl stop viam-server
+
 # Install the latest rdk. Installing instead of upgrading to ensure we get the latest version and don't get stuck on stable.
 curl "https://storage.googleapis.com/packages.viam.com/apps/viam-server/viam-server-latest-$(uname -m).AppImage" -o viam-server
 chmod 755 viam-server
