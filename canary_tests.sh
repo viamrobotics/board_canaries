@@ -25,10 +25,10 @@ chmod 755 viam-server
 ./viam-server --aix-install
 
 # It's possible that the config for the "normal" RDK on this board has components attached to it
-# because someone was working on that board recently. When we re-install the RDK on the previous
-# line, it restarts the "normal" RDK, even if it was previously stopped. This might take ownership
-# of the pins we want to test, so stop it (again) before starting the canary, or we'll get spurious
-# test failures!
+# because someone was working on the board recently. When we re-install the RDK on the previous
+# line, it restarts the "normal" RDK service, even if it was previously stopped. This might take
+# ownership of the pins we want to test, so stop it before starting the canary, or we could get
+# spurious test failures!
 systemctl stop viam-server
 
 systemctl start viam-canary
