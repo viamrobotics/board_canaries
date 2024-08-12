@@ -11,7 +11,8 @@ Code to run on every board, to run canary tests
   - Also jump together 2 more gpio pins to test software PWM.
 - Clone this repo onto the board.
 - Run `sudo ./install.sh`
-  - if you are getting `error: externally-managed-environment` while running the command, then you need to setup `venv` in the directory. 
 - Follow the instructions printed at the end of that script:
   - Copy `canary_config.example.py` into `canary_config.py`. Edit it to use the right location and secret, and the pins on the board you jumped together in the earlier step.
   - Copy `slack_reporter_config.example.py` into `slack_reporter_config.py`. Edit it so it can report to the correct Slack channel. To check that you set it up right, try running `./check_slack_connectivity.py`: if you did it right, you'll get a message in that Slack channel.
+  - Back in app.viam.com, find the `CONNECT` tab. Select `Python` under `Code Ssample` and enable `Include secret`. Then copy the `RobotClient.Options.with_api_key` section and paste it to the `monitor_config.py` of Pi5 canary.
+- Update the "Team Hardware" wiki with the login info. 
