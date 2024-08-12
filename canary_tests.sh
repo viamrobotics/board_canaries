@@ -36,6 +36,7 @@ sleep 120 # The server takes some time to set up its connections; don't talk to 
 
 git pull --ff-only origin main # Update the test script if necessary
 
+source venv/bin/activate
 pip install -r requirements.txt # Install any new dependencies
 
 echo "running tests..."
