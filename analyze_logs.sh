@@ -8,6 +8,8 @@ date '+%Y-%m-%d'
 this_dir="$(dirname -- "$( readlink -f -- "$0"; )")";
 pushd "$this_dir" > /dev/null
 
+source venv/bin/activate
+
 # The sed line keeps only the file contents that match the current date and
 # later. This solution was taken from https://stackoverflow.com/a/7104422
 cat /var/log/canary_tests.log |\

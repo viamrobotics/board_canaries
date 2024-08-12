@@ -16,6 +16,10 @@ pushd "$this_dir" > /dev/null
 # job, even if the repo is owned by a normal non-root user."
 git config --global --add safe.directory "$this_dir"
 
+# Create a virtual environment.
+python -m venv venv
+source venv/bin/activate
+
 pip install -r requirements.txt
 
 # Install the RDK server

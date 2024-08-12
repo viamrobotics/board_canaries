@@ -9,4 +9,4 @@ SHELL=/bin/bash
 
 # The canary tests run at 2:30 AM, the analysis runs at 2:45. If boards are still online at 3:00,
 # they probably ran the tests, so we should check on them then.
-00 3 * * *   root   CANARY_DIR/monitor_other_boards.py >> /var/log/canary_monitor.log 2>&1
+00 3 * * *   root   cd CANARY_DIR && source venv/bin/activate && ./monitor_other_boards.py >> /var/log/canary_monitor.log 2>&1
