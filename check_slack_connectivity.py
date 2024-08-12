@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-import slack_reporter
+try:
+    import slack_reporter
+except:
+    print("\n\n Unable to import Slack stuff! Did you remember to run "
+          "`source venv/bin/activate`?\n\n")
+    raise
 
 
 # This is simultaneously:
