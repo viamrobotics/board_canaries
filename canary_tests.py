@@ -77,14 +77,6 @@ class PinTests(unittest.IsolatedAsyncioTestCase):
     @parameterized.expand(((True,), (False,)))
     async def test_gpios(self, value):
         await self.output_pin.set(value)
-        # The Jetson/Orin boards have a delay when turning on the PWM output.
-        # Since https://github.com/viamrobotics/rdk/pull/4209, GPIO output
-        # on a pin with PWM support has been implemented by using PWM output
-        # instead, which incurs this same delay. So, sleep in here after
-        # setting the pin and before checking if it was set correctly.
-        # TODO(RSDK-8357): remove this once the Orin and Orin Nano output
-        # these signals quickly enough again.
-        time.sleep(0.5)
         result = await self.input_pin.get()
         self.assertEqual(result, value)
 
@@ -110,11 +102,6 @@ class PinTests(unittest.IsolatedAsyncioTestCase):
 
         await pwm_pin.set_pwm_frequency(FREQUENCY)
         await pwm_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
-
-        # The Orin boards have a small delay between when you set the PWM and
-        # when the signal starts outputting. To hopefully compensate for this,
-        # we'll wait a short while before we start counting cycles.
-        await asyncio.sleep(0.5)
 
         starting_count = await interrupt.value()
         await asyncio.sleep(DURATION)
