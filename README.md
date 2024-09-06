@@ -1,7 +1,6 @@
 # board_canaries
 Code to run on every board, to run canary tests. <br />
-Nightly unit test logs are located at `/var/log/canary_tests.log`. These logs are then analyzed and analysis logs can be found at `/var/log/canary_analysis.log`.  <br />
-Test failures are reported to Slack.
+Nightly unit test logs are located at `/var/log/canary_tests.log`. These logs are then analyzed and analysis logs can be found at `/var/log/canary_analysis.log`. Test failures are reported to Slack.
 
 ## To set up a new board:
 - Create a new robot, likely in the `viam-hardware-testing` org, in the "Board Canaries" location.
