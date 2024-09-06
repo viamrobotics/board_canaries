@@ -98,6 +98,8 @@ class PinTests(unittest.IsolatedAsyncioTestCase):
         should_stop = asyncio.Event()
         ticks = []
         tick_stream = await self.board.stream_ticks([interrupt])
+
+        # if we don't return from record_tick_data in five seconds then we fail the test
         counter_task = asyncio.create_task(asyncio.wait_for(self.record_tick_data(tick_stream, ticks, should_stop), 5))
 
         await pwm_pin.set_pwm_frequency(FREQUENCY)
@@ -105,10 +107,7 @@ class PinTests(unittest.IsolatedAsyncioTestCase):
 
         starting_count = await interrupt.value()
         await asyncio.sleep(DURATION)
-
         should_stop.set()
-        
-
         await counter_task
         await pwm_pin.set(False) # Turn the output off again
         for tick in ticks:
@@ -123,7 +122,6 @@ class PinTests(unittest.IsolatedAsyncioTestCase):
 
     @staticmethod
     async def record_tick_data(tick_stream, data, should_stop):
-
         async for tick in tick_stream:
             data.append((tick.time, tick.high, tick.pin_name))
             if should_stop.is_set():
