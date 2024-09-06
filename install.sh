@@ -36,6 +36,7 @@ systemctl daemon-reload
 # the more traditional '/' because there are slashes within $this_dir and we don't want too many
 # slashes to confuse the parser.
 cat crontab_template.txt | sed "s%CANARY_DIR%$this_dir%g" > /etc/cron.d/viam-board-canary
+sudo service cron reload
 
 # Remind the user of the steps they need to do manually
 set +x # Stop printing every line: we're going to print them ourselves
