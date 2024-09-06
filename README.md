@@ -1,5 +1,6 @@
 # board_canaries
-Code to run on every board, to run canary tests
+Code to run on every board, to run canary tests. <br />
+Nightly unit test logs for all boards except the orange pi are located at `/var/log/canary_tests.log`. These logs are then analyzed and analysis logs can be found at `/var/log/canary_analysis.log`. The orange pi's logs are located at `/home/orangepi/board_canaries/`. Test failures are reported to Slack.
 
 ## To set up a new board:
 - Create a new robot, likely in the `viam-hardware-testing` org, in the "Board Canaries" location.
@@ -14,5 +15,5 @@ Code to run on every board, to run canary tests
 - Follow the instructions printed at the end of that script:
   - Copy `canary_config.example.py` into `canary_config.py`. Edit it to use the right location and secret, and the pins on the board you jumped together in the earlier step.
   - Copy `slack_reporter_config.example.py` into `slack_reporter_config.py`. Edit it so it can report to the correct Slack channel. To check that you set it up right, try running `./check_slack_connectivity.py`: if you did it right, you'll get a message in that Slack channel.
-  - Back in app.viam.com, find the `CONNECT` tab. Select `Python` under `Code Ssample` and enable `Include secret`. Then copy the `RobotClient.Options.with_api_key` section and paste it to the `monitor_config.py` of Pi5 canary.
+  - Back in app.viam.com, find the `CONNECT` tab. Select `Python` under `Code Sample` and enable `Include secret`. Then copy the `RobotClient.Options.with_api_key` section and paste it to the `monitor_config.py` of the Pi5 canary.
 - Update the "Team Hardware" wiki with the login info. 
