@@ -99,8 +99,10 @@ class PinTests(unittest.IsolatedAsyncioTestCase):
         ticks = []
         tick_stream = await self.board.stream_ticks([interrupt])
 
-        # if we don't return from record_tick_data in five seconds then we fail the test
-        counter_task = asyncio.create_task(asyncio.wait_for(self.record_tick_data(tick_stream, ticks, should_stop), 5))
+        # If we are not getting any ticks in tick_stream the task will wait 5 secs
+        # for record_tick_data to return, then timeout.
+        counter_task = asyncio.create_task(asyncio.wait_for(\
+            self.record_tick_data(tick_stream, ticks, should_stop), 5))
 
         await pwm_pin.set_pwm_frequency(FREQUENCY)
         await pwm_pin.set_pwm(0.5) # Duty cycle fraction: 0 to 1
