@@ -17,7 +17,7 @@ pushd "$this_dir" > /dev/null
 git config --global --add safe.directory "$this_dir"
 
 # Create a virtual environment.
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 
 pip install -r requirements.txt
