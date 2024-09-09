@@ -35,11 +35,7 @@ async def connect(address, opts):
 
 class PinTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
-        opts = RobotClient.Options(
-            refresh_interval=0,
-            dial_options=DialOptions(credentials=conf.creds)
-        )
-        self.robot = await connect(conf.address, opts)
+        self.robot = await connect(conf.address, conf.opts)
 
         self.board = Board.from_robot(self.robot, "board")
         self.input_pin = await self.board.gpio_pin_by_name(conf.INPUT_PIN)
