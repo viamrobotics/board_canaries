@@ -29,7 +29,7 @@ async def connect(address, opts):
                        shell=True)
         print("Connection error during canary tests. Retrying...")
         time.sleep(5)
-        robot = await RobotClient.at_address(conf.address, opts)
+        robot = await RobotClient.at_address(address, opts)
     return robot
 
 
