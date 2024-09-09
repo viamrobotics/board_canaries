@@ -11,9 +11,10 @@ OUTPUT_PIN = "15"
 SW_PWM_PIN = "20"
 SW_INTERRUPT_PIN = "21"
 
-creds = RobotClient.Options.with_api_key(
-    api_key="secret-api-key",
-    api_key_id="put-the-secret-id-here")
+opts = RobotClient.Options.with_api_key( 
+        api_key='<your api key>',
+        api_key_id='<your api key id>'
+ )
 address = "address-for-robot.viam.cloud"
 
 # Most canaries should leave this as None, but we need at least one to set it to whichever board is
