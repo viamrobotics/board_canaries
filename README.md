@@ -13,7 +13,7 @@ Nightly unit test logs for all boards except the orange pi are located at `/var/
 - Clone this repo onto the board.
 - Run `sudo ./install.sh`
 - Follow the instructions printed at the end of that script:
-  - Copy `canary_config.example.py` into `canary_config.py`. Edit it to use the right location and secret, and the pins on the board you jumped together in the earlier step.
+  - Copy `canary_config.example.py` into `canary_config.py`. Edit it to use the correct address and API key, and the pins on the board you jumped together in the earlier step.
   - Copy `slack_reporter_config.example.py` into `slack_reporter_config.py`. Edit it so it can report to the correct Slack channel. To check that you set it up right, try running `./check_slack_connectivity.py`: if you did it right, you'll get a message in that Slack channel.
-  - Back in app.viam.com, find the `CONNECT` tab. Select `Python` under `Code Sample` and enable `Include secret`. Then copy the `RobotClient.Options.with_api_key` section and paste it to the `monitor_config.py` of the Pi5 canary.
+  - Back in app.viam.com, find the `CONNECT` tab. Select `Python` under `Code Sample` and enable `Include API Key`. Then copy the `opts` section and paste it to the `monitor_config.py` of the Pi5 canary.
 - Update the "Team Hardware" wiki with the login info. 
