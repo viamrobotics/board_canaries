@@ -168,3 +168,7 @@ monitor_config.py
 slack_reporter_config.py
 
 viam-server
+
+# Claude Code
+.claude/worktrees
+.claude/settings.local.json
